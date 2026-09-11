@@ -1,4 +1,9 @@
 extends PanelContainer
+class_name Card
+
+signal clicked(card: Card)
+
+var locked: bool = false
 
 @export var card_data: CardData:
 	set(value):
@@ -14,6 +19,16 @@ extends PanelContainer
 
 func _ready() -> void:
 	_refresh()
+
+func _gui_input(event: InputEvent) -> void:
+	if locked:
+		return
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		clicked.emit(self)
+
+func set_locked(value: bool) -> void:
+	for child in get_children():
+		(child as Card).locked = value
 
 func _refresh() -> void:
 	if card_data == null:
