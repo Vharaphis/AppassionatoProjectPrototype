@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="CardData" format=3 uid="uid://bqi50gsks8geu"]
+
+[ext_resource type="Script" uid="uid://v3hbk2005353" path="res://scripts/data/card_data.gd" id="1_card_data"]
+[ext_resource type="Script" uid="uid://drcxodvl17073" path="res://scripts/effects/card_effect.gd" id="2_card_effect"]
+[ext_resource type="Script" uid="uid://kcxgswjg7rem" path="res://scripts/effects/damage_effect.gd" id="3_damage"]
+[ext_resource type="Script" uid="uid://crwagy4hp0p1g" path="res://scripts/effects/closest_targets.gd" id="4_closest"]
+
+[sub_resource type="Resource" id="Resource_slash_targets"]
+script = ExtResource("4_closest")
+
+[sub_resource type="Resource" id="Resource_slash_damage"]
+script = ExtResource("3_damage")
+amount = 5
+targets = SubResource("Resource_slash_targets")
+
+[resource]
+script = ExtResource("1_card_data")
+card_name = "Slash"
+cost = 1
+description = "Deal 5 damage to the closest target"
+effects = Array[ExtResource("2_card_effect")]([SubResource("Resource_slash_damage")])

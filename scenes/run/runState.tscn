@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/run/run_state.gd" id="1_run_state"]
+[ext_resource type="Script" uid="uid://cf5r41y5evc7t" path="res://scripts/cards/deck.gd" id="2_deck"]
+[ext_resource type="Script" uid="uid://v3hbk2005353" path="res://scripts/data/card_data.gd" id="3_card_data"]
+[ext_resource type="Resource" uid="uid://bqi50gsks8geu" path="res://scenes/cards/Slash.tres" id="4_slash"]
+[ext_resource type="Resource" uid="uid://b185dsf8wmf28" path="res://scenes/cards/Shield.tres" id="5_shield"]
+
+[node name="RunState" type="Node"]
+script = ExtResource("1_run_state")
+reward_pool = Array[ExtResource("3_card_data")]([ExtResource("4_slash"), ExtResource("5_shield")])
+
+[node name="Deck" type="Node" parent="."]
+script = ExtResource("2_deck")
+starting_cards = Array[ExtResource("3_card_data")]([ExtResource("4_slash"), ExtResource("4_slash"), ExtResource("4_slash"), ExtResource("4_slash"), ExtResource("4_slash"), ExtResource("5_shield"), ExtResource("5_shield"), ExtResource("5_shield"), ExtResource("5_shield")])

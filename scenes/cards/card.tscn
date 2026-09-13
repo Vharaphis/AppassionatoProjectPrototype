@@ -1,0 +1,52 @@
+[gd_scene format=3 uid="uid://lwg44yfou1ai"]
+
+[ext_resource type="Script" uid="uid://bk7ijui1t20mw" path="res://scripts/cards/card.gd" id="1_0qqw3"]
+[ext_resource type="Script" uid="uid://v3hbk2005353" path="res://scripts/data/card_data.gd" id="2_jl6rh"]
+
+[sub_resource type="Resource" id="Resource_un5qg"]
+script = ExtResource("2_jl6rh")
+metadata/_custom_type_script = "uid://v3hbk2005353"
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_jl6rh"]
+
+[node name="Card" type="PanelContainer" unique_id=942914442]
+custom_minimum_size = Vector2(160, 220)
+script = ExtResource("1_0qqw3")
+card_data = SubResource("Resource_un5qg")
+
+[node name="Background" type="NinePatchRect" parent="." unique_id=1984218852]
+layout_mode = 2
+texture = SubResource("PlaceholderTexture2D_jl6rh")
+
+[node name="Header" type="HBoxContainer" parent="." unique_id=1522188671]
+layout_mode = 2
+size_flags_vertical = 0
+mouse_filter = 2
+
+[node name="NameLabel" type="Label" parent="Header" unique_id=491522954]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="TemporalityBadge" type="Label" parent="Header" unique_id=1226449575]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="CostBadge" type="Label" parent="Header" unique_id=437774280]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="Icon" type="TextureRect" parent="." unique_id=310574023]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+
+[node name="DescriptionLabel" type="RichTextLabel" parent="." unique_id=1498300039]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+fit_content = true
+scroll_active = false
