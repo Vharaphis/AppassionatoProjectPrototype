@@ -11,12 +11,13 @@ config_version=5
 [application]
 
 config/name="ProjectAppassionato_proto"
+run/main_scene="uid://dmj0oengu0g0a"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-CombatContext="*uid://cvb3hsugf2qx2"
+RunState="*res://scenes/run/runState.tscn"
 
 [display]
 

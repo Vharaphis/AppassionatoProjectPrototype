@@ -1,10 +1,6 @@
 [gd_scene format=3 uid="uid://dmj0oengu0g0a"]
 
 [ext_resource type="Script" uid="uid://x5oe1x172s5" path="res://scenes/card_management_scene.gd" id="1_j72h1"]
-[ext_resource type="Script" uid="uid://cf5r41y5evc7t" path="res://scripts/cards/deck.gd" id="2_cxt2q"]
-[ext_resource type="Script" uid="uid://v3hbk2005353" path="res://scripts/data/card_data.gd" id="3_5wmik"]
-[ext_resource type="Resource" uid="uid://bqi50gsks8geu" path="res://scenes/cards/Slash.tres" id="4_ngbg7"]
-[ext_resource type="Resource" uid="uid://b185dsf8wmf28" path="res://scenes/cards/Shield.tres" id="5_4ilq0"]
 [ext_resource type="Script" uid="uid://djk7fh8dnevvw" path="res://scripts/cards/hand.gd" id="6_ocpiu"]
 [ext_resource type="Script" uid="uid://wv6s42ab7fp8" path="res://scripts/cards/playing_area.gd" id="7_cxt2q"]
 
@@ -12,11 +8,6 @@
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_j72h1")
-
-[node name="Deck" type="Node" parent="." unique_id=1970990097]
-unique_name_in_owner = true
-script = ExtResource("2_cxt2q")
-starting_cards = Array[ExtResource("3_5wmik")]([ExtResource("4_ngbg7"), ExtResource("4_ngbg7"), ExtResource("4_ngbg7"), ExtResource("4_ngbg7"), ExtResource("4_ngbg7"), ExtResource("5_4ilq0"), ExtResource("5_4ilq0"), ExtResource("5_4ilq0"), ExtResource("5_4ilq0")])
 
 [node name="Hand" type="HBoxContainer" parent="." unique_id=1508068058]
 unique_name_in_owner = true
@@ -44,3 +35,20 @@ layout_mode = 0
 offset_right = 8.0
 offset_bottom = 8.0
 text = "Play"
+
+[node name="RoundLabel" type="Label" parent="HUD" unique_id=1127124097]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 120.0
+offset_right = 400.0
+offset_bottom = 26.0
+text = "Manche 1"
+
+[node name="DeckLabel" type="Label" parent="HUD" unique_id=838683009]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 120.0
+offset_top = 28.0
+offset_right = 400.0
+offset_bottom = 54.0
+text = "Pioche 0  ·  défausse 0"

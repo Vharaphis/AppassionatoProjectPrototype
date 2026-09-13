@@ -31,6 +31,14 @@ func draw_card() -> CardInstance:
 		shuffle()
 	return CardInstance.new(draw_pile.pop_back())
 
+## Une carte gagnée en récompense entre dans la pioche, qui est remélangée : elle
+## peut sortir dès la manche suivante au lieu d'attendre que la défausse revienne.
+func add_card(data: CardData) -> void:
+	if data == null:
+		return
+	draw_pile.append(data)
+	shuffle()
+
 func discard(instance: CardInstance) -> void:
 	if instance == null or instance.data == null:
 		return
@@ -38,3 +46,7 @@ func discard(instance: CardInstance) -> void:
 
 func cards_remaining() -> int:
 	return draw_pile.size()
+
+## Cartes du deck qui ne sont ni en main ni sur la piste.
+func total_cards() -> int:
+	return draw_pile.size() + discard_pile.size()

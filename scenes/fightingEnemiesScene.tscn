@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://gr51l2w6pyvx" path="res://scenes/enemies/enemy.tscn" id="6_enemy"]
 [ext_resource type="Script" uid="uid://cr8rn7bvc40ts" path="res://scripts/combat/card_reader.gd" id="7_reader"]
 [ext_resource type="Script" uid="uid://bqic58bf5o12t" path="res://scripts/combat/combat_runtime.gd" id="8_runtime"]
+[ext_resource type="Script" uid="uid://dhnklq0wt3bf5" path="res://scripts/combat/combat_objective.gd" id="9_objective"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hp_bg"]
 bg_color = Color(0.1, 0.1, 0.12, 0.8)
@@ -47,6 +48,7 @@ enemy_scene = ExtResource("6_enemy")
 target = NodePath("../Player")
 enemies_container = NodePath("../Enemies")
 level = NodePath("../Level")
+autostart = false
 
 [node name="CardReader" type="Node" parent="." unique_id=749338888]
 unique_name_in_owner = true
@@ -59,6 +61,11 @@ player = NodePath("../Player")
 enemies_root = NodePath("../Enemies")
 level = NodePath("../Level")
 reader = NodePath("../CardReader")
+
+[node name="CombatObjective" type="Node" parent="." unique_id=1085873689 node_paths=PackedStringArray("spawner")]
+unique_name_in_owner = true
+script = ExtResource("9_objective")
+spawner = NodePath("../EnemySpawner")
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=848823302]
 
@@ -85,6 +92,19 @@ grow_vertical = 2
 text = "HP 100 / 100"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="ObjectiveLabel" type="Label" parent="HUD" unique_id=1381229792]
+unique_name_in_owner = true
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -236.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 44.0
+grow_horizontal = 0
+text = "Ennemis  0 / 8"
+horizontal_alignment = 2
 
 [node name="PlayedCardsDisplay" type="HBoxContainer" parent="HUD" unique_id=2026286095]
 unique_name_in_owner = true
@@ -124,3 +144,33 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 text = "Back to preparation"
+
+[node name="VictoryPanel" type="PanelContainer" parent="HUD" unique_id=956133028]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -140.0
+offset_top = -60.0
+offset_right = 140.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/VictoryPanel" unique_id=506223645]
+layout_mode = 2
+alignment = 1
+
+[node name="VictoryLabel" type="Label" parent="HUD/VictoryPanel/VBoxContainer" unique_id=1756251911]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Manche terminée"
+horizontal_alignment = 1
+
+[node name="ContinueButton" type="Button" parent="HUD/VictoryPanel/VBoxContainer" unique_id=1434816590]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Récompense"

@@ -6,8 +6,13 @@ signal clicked(card: Card)
 const PLAY_SYMBOL := "●"
 const COOLDOWN_SYMBOL := "○"
 const DIM_MODULATE := Color(0.65, 0.65, 0.7)
+## Teinte de la carte retenue dans l'écran de récompense.
+const SELECTED_MODULATE := Color(1.15, 1.15, 0.85)
 
 var locked: bool = false
+## Mise en avant par l'écran de récompense. Sans rapport avec `active_slot`, qui
+## est le surlignage du lecteur : les deux ne coexistent jamais dans une scène.
+var is_selected: bool = false
 
 ## Runtime card shown by this node. When null, `card_data` is displayed instead
 ## (handy to preview a card directly in the editor).
@@ -55,6 +60,11 @@ func clear_active_slot() -> void:
 	active_slot = -1
 	modulate = DIM_MODULATE
 	_refresh_temporality()
+
+## Appelé par l'écran de récompense quand cette carte est celle qu'on garde.
+func set_selected(value: bool) -> void:
+	is_selected = value
+	modulate = SELECTED_MODULATE if value else Color.WHITE
 
 func _refresh() -> void:
 	var data := get_data()

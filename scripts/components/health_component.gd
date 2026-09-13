@@ -46,6 +46,13 @@ func take_damage(amount: int) -> bool:
 		died.emit()
 	return true
 
+## Restaure des PV sauvegardés d'une manche à l'autre. Ce n'est ni un coup ni un
+## soin : ni `damaged` ni `died` ne sont émis.
+func set_current_health(value: int) -> void:
+	current_health = clampi(value, 0, max_health)
+	is_dead = current_health == 0
+	health_changed.emit(current_health, max_health)
+
 func add_armor(amount: int) -> void:
 	if is_dead or amount <= 0:
 		return
