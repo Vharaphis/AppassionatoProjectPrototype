@@ -5,9 +5,9 @@ signal card_selected(card: Card)
 
 const CARD_SCENE := preload("res://scenes/cards/card.tscn")
 
-func draw_card(card_data: CardData) -> Card:
+func draw_card(instance: CardInstance) -> Card:
 	var card := CARD_SCENE.instantiate() as Card
-	card.card_data = card_data
+	card.card_instance = instance
 	add_card(card)
 	return card
 

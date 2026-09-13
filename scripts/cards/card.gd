@@ -3,7 +3,22 @@ class_name Card
 
 signal clicked(card: Card)
 
+const PLAY_SYMBOL := "●"
+const COOLDOWN_SYMBOL := "○"
+const DIM_MODULATE := Color(0.65, 0.65, 0.7)
+
 var locked: bool = false
+
+## Runtime card shown by this node. When null, `card_data` is displayed instead
+## (handy to preview a card directly in the editor).
+var card_instance: CardInstance:
+	set(value):
+		card_instance = value
+		if is_node_ready():
+			_refresh()
+
+## Slot highlighted by the reader, -1 when the reader is not on this card.
+var active_slot: int = -1
 
 @export var card_data: CardData:
 	set(value):
@@ -26,16 +41,42 @@ func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		clicked.emit(self)
 
-func set_locked(value: bool) -> void:
-	for child in get_children():
-		(child as Card).locked = value
+func get_data() -> CardData:
+	return card_instance.data if card_instance else card_data
+
+## Called by the combat scene when the reader enters a slot of this card.
+func set_active_slot(slot_index: int) -> void:
+	active_slot = slot_index
+	modulate = Color.WHITE
+	_refresh_temporality()
+
+## Called when the reader is somewhere else on the track.
+func clear_active_slot() -> void:
+	active_slot = -1
+	modulate = DIM_MODULATE
+	_refresh_temporality()
 
 func _refresh() -> void:
-	if card_data == null:
+	var data := get_data()
+	if data == null:
 		return
-	name_label.text = card_data.card_name
-	cost_badge.text = str(card_data.cost)
-	temporality_badge.text = "%.1fs" % card_data.temporality
-	description_label.text = card_data.description
-	if card_data.icon:
-		icon_rect.texture = card_data.icon
+	name_label.text = data.card_name
+	cost_badge.text = str(data.cost)
+	description_label.text = data.description
+	if data.icon:
+		icon_rect.texture = data.icon
+	_refresh_temporality()
+
+func _refresh_temporality() -> void:
+	if temporality_badge == null:
+		return
+	var temporality := card_instance.get_temporality() if card_instance else _data_temporality()
+	var slots := PackedStringArray()
+	for i in temporality.length():
+		var symbol := PLAY_SYMBOL if temporality[i] == CardData.PLAY_CHAR else COOLDOWN_SYMBOL
+		slots.append("[%s]" % symbol if i == active_slot else symbol)
+	temporality_badge.text = " ".join(slots)
+
+func _data_temporality() -> String:
+	var data := get_data()
+	return data.temporality if data else ""

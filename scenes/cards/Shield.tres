@@ -1,11 +1,17 @@
 [gd_resource type="Resource" script_class="CardData" format=3 uid="uid://b185dsf8wmf28"]
 
-[ext_resource type="Script" uid="uid://v3hbk2005353" path="res://scripts/data/card_data.gd" id="1_un5qg"]
+[ext_resource type="Script" uid="uid://v3hbk2005353" path="res://scripts/data/card_data.gd" id="1_card_data"]
+[ext_resource type="Script" uid="uid://drcxodvl17073" path="res://scripts/effects/card_effect.gd" id="2_card_effect"]
+[ext_resource type="Script" uid="uid://myjlsdrpydm7" path="res://scripts/effects/armor_effect.gd" id="3_armor"]
+
+[sub_resource type="Resource" id="Resource_shield_armor"]
+script = ExtResource("3_armor")
+amount = 2
 
 [resource]
-script = ExtResource("1_un5qg")
+script = ExtResource("1_card_data")
 card_name = "Shield"
 cost = 1
-description = "Grants 2 shields"
-effects = "o"
-metadata/_custom_type_script = "uid://v3hbk2005353"
+temporality = "xo"
+description = "Grants 2 armor, absorbed before HP"
+effects = Array[ExtResource("2_card_effect")]([SubResource("Resource_shield_armor")])

@@ -1,3 +1,4 @@
 extends Node
 
-var card_sequence: Array[CardData] = []
+## Cards locked on the track during the preparation phase, handed to the combat scene.
+var card_sequence: Array[CardInstance] = []

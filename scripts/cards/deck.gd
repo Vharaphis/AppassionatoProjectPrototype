@@ -19,7 +19,9 @@ func reset() -> void:
 func shuffle() -> void:
 	draw_pile.shuffle()
 
-func draw_card() -> CardData:
+## Draws a card and wraps it in a runtime instance, so the run never writes
+## into the shared CardData resources.
+func draw_card() -> CardInstance:
 	if draw_pile.is_empty():
 		if discard_pile.is_empty():
 			deck_emptied.emit()
@@ -27,10 +29,12 @@ func draw_card() -> CardData:
 		draw_pile = discard_pile.duplicate()
 		discard_pile.clear()
 		shuffle()
-	return draw_pile.pop_back()
+	return CardInstance.new(draw_pile.pop_back())
 
-func discard(card_data: CardData) -> void:
-	discard_pile.append(card_data)
+func discard(instance: CardInstance) -> void:
+	if instance == null or instance.data == null:
+		return
+	discard_pile.append(instance.data)
 
 func cards_remaining() -> int:
 	return draw_pile.size()

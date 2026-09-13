@@ -15,7 +15,7 @@ signal enemy_spawned(enemy: Enemy)
 @export var autostart: bool = true
 @export var spawn_interval: float = 1.0
 @export var enemies_per_spawn: int = 1
-@export var max_enemies: int = 60
+@export var max_enemies: int = 15
 
 @export_group("Placement")
 ## Enemies appear on a ring around the target, between these two distances.
@@ -62,8 +62,10 @@ func spawn_enemy() -> Enemy:
 		return null
 	var enemy := enemy_scene.instantiate() as Enemy
 	enemy.target = target
+	# Position set before entering the tree: otherwise the enemy exists for one
+	# frame at the container origin, right on top of the player.
+	enemy.position = enemies_container.to_local(_pick_spawn_position())
 	enemies_container.add_child(enemy)
-	enemy.global_position = _pick_spawn_position()
 	enemy_spawned.emit(enemy)
 	return enemy
 

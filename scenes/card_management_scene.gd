@@ -20,10 +20,10 @@ func _ready() -> void:
 
 func draw_to_hand(amount: int) -> void:
 	for i in amount:
-		var card_data := deck.draw_card()
-		if card_data == null:
+		var instance := deck.draw_card()
+		if instance == null:
 			break
-		hand.draw_card(card_data)
+		hand.draw_card(instance)
 
 func _on_hand_card_selected(card: Card) -> void:
 	hand.remove_card(card)
@@ -33,7 +33,7 @@ func _on_playing_area_card_selected(card: Card) -> void:
 	playing_area.remove_card(card)
 	hand.add_card(card)
 
-func _on_composition_changed(sequence: Array[CardData]) -> void:
+func _on_composition_changed(sequence: Array[CardInstance]) -> void:
 	play_button.disabled = sequence.is_empty()
 
 func _on_play_pressed() -> void:
