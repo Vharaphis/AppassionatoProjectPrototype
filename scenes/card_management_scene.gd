@@ -24,6 +24,8 @@ func _ready() -> void:
 	hand.card_discard_requested.connect(_on_hand_card_discard_requested)
 	playing_area.card_selected.connect(_on_playing_area_card_selected)
 	playing_area.composition_changed.connect(_on_composition_changed)
+	playing_area.card_dropped.connect(_on_track_card_dropped)
+	hand.card_dropped.connect(_on_hand_card_dropped)
 	play_button.pressed.connect(_on_play_pressed)
 	play_button.disabled = true
 	round_label.text = "Manche %d" % RunState.round_index
@@ -62,6 +64,26 @@ func _on_playing_area_card_selected(card: Card) -> void:
 	hand.add_card(card)
 	_refresh_labels()
 
+## Glisser sur la piste : pose depuis la main (si le mana suffit) ou réordonne.
+func _on_track_card_dropped(card: Card, index: int) -> void:
+	if card.get_parent() == playing_area:
+		playing_area.move_card(card, index)
+		return
+	if card.get_parent() != hand or card.card_instance.get_cost() > mana_left():
+		return
+	hand.remove_card(card)
+	playing_area.add_card(card)
+	playing_area.move_card(card, index)
+
+## Glisser sur la main : retire de la piste ou réordonne la main.
+func _on_hand_card_dropped(card: Card, index: int) -> void:
+	if card.get_parent() == playing_area:
+		playing_area.remove_card(card)
+		hand.add_card(card)
+		_refresh_labels()
+	if card.get_parent() == hand:
+		hand.move_card(card, index)
+
 ## Pioche d'abord, défausse ensuite : sinon la carte défaussée peut ressortir
 ## aussitôt quand la pioche vide remélange la défausse.
 func _on_hand_card_discard_requested(card: Card) -> void:
@@ -92,7 +114,7 @@ func _on_play_pressed() -> void:
 func _refresh_labels() -> void:
 	var mana := mana_left()
 	mana_label.text = "Mana %d / %d" % [mana, RunState.mana_per_round]
-	redraw_label.text = "Clic droit : défausser et repiocher (%d)" % redraws_left
+	redraw_label.text = "Glisser ou cliquer pour jouer · clic droit : défausser et repiocher (%d)" % redraws_left
 	deck_label.text = "Pioche %d  ·  défausse %d" % [deck.draw_pile.size(), deck.discard_pile.size()]
 	for child in hand.get_children():
 		var card := child as Card

@@ -8,7 +8,7 @@ script = ExtResource("2_jl6rh")
 metadata/_custom_type_script = "uid://v3hbk2005353"
 
 [node name="Card" type="PanelContainer" unique_id=942914442]
-custom_minimum_size = Vector2(160, 220)
+custom_minimum_size = Vector2(136, 220)
 script = ExtResource("1_0qqw3")
 card_data = SubResource("Resource_un5qg")
 

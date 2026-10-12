@@ -53,6 +53,17 @@ func _process(_delta: float) -> bool:
 			assert(prep.hand.card_count() == 2)
 			assert(prep.redraws_left == 3)
 			assert(_count_in(prep) == _deck_size)
+			# Drag & drop: onto the track at an index, reorder, back to the hand.
+			var a = prep.hand.get_child(0)
+			var b = prep.hand.get_child(1)
+			prep._on_track_card_dropped(a, 0)
+			prep._on_track_card_dropped(b, 0)
+			assert(prep.playing_area.get_children() == [b, a])
+			prep._on_track_card_dropped(b, 2)
+			assert(prep.playing_area.get_children() == [a, b])
+			prep._on_hand_card_dropped(a, 0)
+			assert(prep.hand.get_children() == [a] and prep.mana_left() == 1)
+			assert(_count_in(prep) == _deck_size)
 			# Rewards: distinct partitions, higher rarities more likely later.
 			for i in 50:
 				var offer: Array = _rs.roll_reward()

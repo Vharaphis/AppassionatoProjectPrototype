@@ -59,11 +59,29 @@ func _ready() -> void:
 func _gui_input(event: InputEvent) -> void:
 	if locked:
 		return
-	if event is InputEventMouseButton and event.pressed:
-		if event.button_index == MOUSE_BUTTON_LEFT:
+	if event is InputEventMouseButton:
+		# Left click on release: a press that turns into a drag never releases here.
+		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
 			clicked.emit(self)
-		elif event.button_index == MOUSE_BUTTON_RIGHT:
+		elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
 			right_clicked.emit(self)
+
+func _get_drag_data(_at_position: Vector2) -> Variant:
+	if locked or card_instance == null:
+		return null
+	var preview := (load(scene_file_path) as PackedScene).instantiate() as Card
+	preview.card_instance = card_instance
+	preview.modulate.a = 0.8
+	set_drag_preview(preview)
+	return self
+
+## Drops on a card go to its container (hand or track), at the card's position.
+func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
+	var parent := get_parent() as Control
+	return parent != null and parent.has_method("_can_drop_data") and parent._can_drop_data(at_position + position, data)
+
+func _drop_data(at_position: Vector2, data: Variant) -> void:
+	(get_parent() as Control)._drop_data(at_position + position, data)
 
 func get_data() -> CardData:
 	return card_instance.data if card_instance else card_data
