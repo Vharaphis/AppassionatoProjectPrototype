@@ -16,6 +16,15 @@ signal round_finished(round_index: int)
 ## Ennemis supplémentaires demandés à chaque manche suivante.
 @export var kills_per_round: int = 2
 
+@export_group("Préparation")
+## Mana à dépenser sur la piste à chaque manche. Le mana non dépensé est perdu.
+@export var mana_per_round: int = 4
+## Cartes piochées au début de chaque préparation, dans la limite de `max_hand_size`.
+@export var draw_per_round: int = 3
+@export var max_hand_size: int = 8
+## Défausser une carte de la main pour en repiocher une, autant de fois par manche.
+@export var redraws_per_round: int = 3
+
 @export_group("Récompense")
 ## Nombre de cartes proposées par la scène de récompense.
 @export var reward_choices: int = 3
@@ -44,6 +53,8 @@ signal round_finished(round_index: int)
 
 ## Cartes verrouillées sur la piste pendant la préparation, lues par le combat.
 var card_sequence: Array[CardInstance] = []
+## Cartes non jouées, gardées en main d'une manche à l'autre.
+var hand: Array[CardInstance] = []
 var round_index: int = 1
 var player_health: int = 100
 var kills_total: int = 0
@@ -57,6 +68,7 @@ func reset_run() -> void:
 	player_health = player_max_health
 	kills_total = 0
 	card_sequence.clear()
+	hand.clear()
 	deck.reset()
 	run_reset.emit()
 

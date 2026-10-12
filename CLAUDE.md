@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Godot **4.7** (Forward+, Jolt Physics, D3D12 on Windows) prototype written in GDScript. No build system or linter: the project is run from the Godot editor (F5). Main scene is `scenes/cardManagementScene.tscn`.
 
-Tests are plain scripts in `tests/`, run headless: `godot --headless --script res://tests/test_spawn_table.gd` (asserts, prints `OK`) and `godot --headless --script res://tests/smoke_fight.gd -- <round> <game seconds>` (runs the fight at that round with an unkillable player, prints what spawned; script errors appear in the output). On Windows the GUI exe prints nothing: add `--log-file <path>` and read the file. Open the project in the editor once after adding a `class_name`, so the global class cache knows it.
+Tests are plain scripts in `tests/`, run headless: `test_spawn_table.gd` and `test_card_flow.gd` (asserts, print `OK`, e.g. `godot --headless --script res://tests/test_card_flow.gd`) and `godot --headless --script res://tests/smoke_fight.gd -- <round> <game seconds>` (runs the fight at that round with an unkillable player, prints what spawned; script errors appear in the output). On Windows the GUI exe prints nothing: add `--log-file <path>` and read the file. Open the project in the editor once after adding a `class_name`, so the global class cache knows it.
 
 The game is a rhythm/deckbuilder hybrid: the player arranges cards on a track, then a 3D arena fight runs where the cards are played automatically in a loop, on tempo, while enemies spawn.
 
@@ -18,7 +18,7 @@ Code comments and UI strings are mixed French/English; match the language of the
 
 Everything that must survive a scene change lives in the **`RunState` autoload** (`scripts/run/run_state.gd`, declared as a scene `scenes/run/runState.tscn` so its `Deck` child and reward pool are editable in the inspector; it intentionally has no `class_name`). It holds the deck, player HP, round index, per-round difficulty formulas, the reward pool, and `card_sequence` (the cards locked on the track, handed from preparation to combat).
 
-Card conservation matters: cards leaving the hand/track must go back to `deck.discard()` (see `_discard_remaining_hand` and `RunState.discard_sequence`), otherwise the deck drains over rounds and soft-locks.
+Preparation: 4 mana per round spent by the track (`cost`), 3 cards drawn per round, the unplayed hand persists in `RunState.hand` (max 8), right-click redraws (3 per round), rewards go to the discard. Card conservation matters: every card is always in the draw pile, discard, `RunState.hand` or the track; cards leaving the track go back through `RunState.discard_sequence`, otherwise the deck drains and soft-locks (checked by `test_card_flow.gd`).
 
 ## Card system
 

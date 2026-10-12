@@ -52,3 +52,20 @@ offset_top = 28.0
 offset_right = 400.0
 offset_bottom = 54.0
 text = "Pioche 0  ·  défausse 0"
+
+[node name="ManaLabel" type="Label" parent="HUD" unique_id=1640212377]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 420.0
+offset_right = 640.0
+offset_bottom = 26.0
+text = "Mana 4 / 4"
+
+[node name="RedrawLabel" type="Label" parent="HUD" unique_id=1093844521]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 420.0
+offset_top = 28.0
+offset_right = 820.0
+offset_bottom = 54.0
+text = "Clic droit : défausser et repiocher (3)"

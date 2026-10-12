@@ -2,6 +2,7 @@ extends PanelContainer
 class_name Card
 
 signal clicked(card: Card)
+signal right_clicked(card: Card)
 
 const PLAY_SYMBOL := "●"
 const COOLDOWN_SYMBOL := "○"
@@ -43,8 +44,11 @@ func _ready() -> void:
 func _gui_input(event: InputEvent) -> void:
 	if locked:
 		return
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		clicked.emit(self)
+	if event is InputEventMouseButton and event.pressed:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			clicked.emit(self)
+		elif event.button_index == MOUSE_BUTTON_RIGHT:
+			right_clicked.emit(self)
 
 func get_data() -> CardData:
 	return card_instance.data if card_instance else card_data

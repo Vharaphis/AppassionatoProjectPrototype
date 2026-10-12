@@ -31,13 +31,12 @@ func draw_card() -> CardInstance:
 		shuffle()
 	return CardInstance.new(draw_pile.pop_back())
 
-## Une carte gagnée en récompense entre dans la pioche, qui est remélangée : elle
-## peut sortir dès la manche suivante au lieu d'attendre que la défausse revienne.
+## Une carte gagnée en récompense entre dans la défausse (choix de design) : elle
+## sortira quand la défausse sera remélangée dans la pioche.
 func add_card(data: CardData) -> void:
 	if data == null:
 		return
-	draw_pile.append(data)
-	shuffle()
+	discard_pile.append(data)
 
 func discard(instance: CardInstance) -> void:
 	if instance == null or instance.data == null:
