@@ -53,6 +53,15 @@ func _process(_delta: float) -> bool:
 			assert(prep.hand.card_count() == 2)
 			assert(prep.redraws_left == 3)
 			assert(_count_in(prep) == _deck_size)
+			# Rewards: distinct partitions, higher rarities more likely later.
+			for i in 50:
+				var offer: Array = _rs.roll_reward()
+				assert(offer.size() == 3)
+				assert(offer[0] != offer[1] and offer[1] != offer[2] and offer[0] != offer[2])
+			assert(_rs.rarity_weight(3, 1) < _rs.rarity_weight(3, 8))
+			assert(_rs.rarity_weight(0, 1) > _rs.rarity_weight(0, 8))
+			_rs.reward_pool = _rs.reward_pool.slice(0, 2)
+			assert(_rs.roll_reward().size() == 3)
 			print("OK")
 			quit(0)
 	_step += 1
