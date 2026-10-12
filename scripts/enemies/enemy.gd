@@ -23,6 +23,8 @@ var contact_damage: int:
 @onready var behavior: EnemyBehavior = _find_behavior()
 
 var _tint_material: StandardMaterial3D
+var _slow_factor: float = 1.0
+var _slow_left: float = 0.0
 
 func _ready() -> void:
 	add_to_group("enemies")
@@ -40,6 +42,9 @@ func _physics_process(delta: float) -> void:
 	if data and behavior:
 		velocity = behavior.physics_step(self, delta)
 		facing = behavior.get_facing(self)
+	if _slow_left > 0.0:
+		_slow_left -= delta
+		velocity *= _slow_factor
 	if facing == Vector3.ZERO:
 		facing = velocity
 	facing.y = 0.0
@@ -99,3 +104,12 @@ func _find_behavior() -> EnemyBehavior:
 func _on_health_died() -> void:
 	died.emit(self)
 	queue_free()
+
+## Multiplies the movement speed by `factor` for `duration` seconds. A new slow
+## refreshes the current one (strongest factor, longest duration), never stacks.
+func apply_slow(factor: float, duration: float) -> void:
+	_slow_factor = factor if _slow_left <= 0.0 else minf(_slow_factor, factor)
+	_slow_left = maxf(_slow_left, duration)
+
+func is_slowed() -> bool:
+	return _slow_left > 0.0

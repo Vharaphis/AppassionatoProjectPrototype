@@ -74,6 +74,22 @@ func _run() -> void:
 	assert(berserk.is_met(_ctx))
 	player.health.set_current_health(100)
 
+	# Slow: only the targets, duration scaled by the multiplier, refresh without stacking.
+	var slow = load("res://scripts/effects/slow_effect.gd").new()
+	slow.targets = circle
+	_ctx.effect_multiplier = 2.0
+	slow.execute(_ctx)
+	_ctx.effect_multiplier = 1.0
+	assert(front.is_slowed() and behind.is_slowed() and not far.is_slowed())
+	assert(is_equal_approx(front._slow_left, 4.0))
+	front.apply_slow(0.8, 1.0)
+	assert(is_equal_approx(front._slow_left, 4.0) and is_equal_approx(front._slow_factor, 0.5))
+
+	# Dash: invulnerable while dashing; no camera here, so it follows `facing`.
+	var dash = load("res://scripts/effects/dash_effect.gd").new()
+	dash.execute(_ctx)
+	assert(player.is_dashing() and player.health.is_invulnerable())
+
 	# Solo: only partition of its type on the track.
 	var solo = load("res://scripts/effects/keywords/solo_condition.gd").new()
 	var picking = _instance("res://scenes/cards/Picking.tres")
