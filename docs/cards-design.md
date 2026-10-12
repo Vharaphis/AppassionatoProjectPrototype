@@ -56,6 +56,7 @@ La joueur doit choisir entre 3 cartes à la fin de la manche. La carte choisie e
 | Choix en récompense | 3, on en garde 1 | 3, on en garde 1 qui va dans la défausse | |
 | Retirer une carte du deck | impossible | impossible | a prévoir pour une future update |
 | Améliorer une carte | impossible | impossible | pas prévue |
+| Rechargement de la piste | aucun | 2,5 s de pause après la dernière carte, puis la lecture reprend | retour de playtest, `CardReader.reload_duration` |
 | Tempo (BPM) | 80 fixe | en fonction de la musique du niveau | à ne pas implémenter durant le proto car pas de musique |
 
 ## 4. Mots-clés
@@ -105,7 +106,7 @@ La colonne gabarit s'applique pour le moment uniquement aux Attaques et désigne
 
 | Nom | Coût | Temporalité | Effet | Mot-clé | Effet du mot-clé | Gabarit | Ciblage | Type | Rareté |
 |---|---|---|---|---|---|---|---|---|---|
-| Shred | 1 | `o` | 5 dégâts | none | none | face au joueur (direction du déplacement) | cône | Attaque | commune |
+| Shred | 1 | `o` | 5 dégâts | none | none | face au joueur (direction du regard, vers la souris) | cône | Attaque | commune |
 | Ampli | 2 | `xo` | Multiplie par 2 tous les nombres de la prochaine lecture (`o`) d'une partition de type Attaque ou Préparation | none | none | soi | none | Flot | rare |
 | Dash | 1 | `xo` | Ruée de 4m dans une direction | Berserk | 3 dégâts en autour du joueur à la fin de la ruée | souris | cercle de 2m | Préparation | peu commune |
 | Growl | 2 | `o` | 5 dégâts autour du joueur | Berserk | Ralentit les cibles touchées pendant 2 sec | soi | cercle | Attaque | peu commune |
@@ -114,7 +115,7 @@ La colonne gabarit s'applique pour le moment uniquement aux Attaques et désigne
 | Picking | 0 | `o` | 4x2 dégâts aux cibles les plus proches | Solo | les projectiles rebondissent 4 fois entres les ennemis | plus proche | projectile | Attaque | commune |
 
 Gabarits génériques (réutilisables par toute attaque, un effet comme le ralentissement se branche sur n'importe lequel) :
-- **Cône** devant le joueur, orienté par la direction du déplacement (Shred).
+- **Cône** devant le joueur, orienté vers où il regarde, c.-à-d. la souris (Shred).
 - **Cercle** autour du joueur (Growl, Berserk du Dash).
 - **Projectile** vers les ennemis les plus proches (Picking).
 
@@ -164,7 +165,7 @@ tiens en toi à ce qui est listé ici et uniquement à ça dans le cadre de la c
 - **Pioche** : 3 cartes par manche, y compris la première. Main pleine (8) : on ne pioche pas au-delà, le reste reste dans la pioche.
 - **Défausser / repiocher** : jusqu'à 3 cartes **par manche**, le compteur repart à chaque préparation.
 - **Mana** : 4 par manche, le mana non dépensé est perdu. Les cartes de la piste vont en défausse après le combat.
-- **Shred** : orienté dans la direction du déplacement du joueur (dernière direction si immobile).
+- **Shred** : orienté là où le joueur regarde ; le personnage se tourne vers la souris (retour de playtest, la direction du déplacement était trop dure à jouer).
 - **Dash** : vers la souris projetée au sol. Invulnérable pendant la ruée, arrêté par les murs. Pendant la case `x`, la portée s'affiche au sol.
 - **Ampli** : type Flot. Agit sur la prochaine lecture (`o`) d'une partition Attaque ou Préparation, donc jamais sur un autre Ampli ni sur une Flot.
   Double tous les nombres (dégâts, armure, durée du ralentissement, distance du dash). Sur Picking : double les dégâts par projectile, pas le nombre.

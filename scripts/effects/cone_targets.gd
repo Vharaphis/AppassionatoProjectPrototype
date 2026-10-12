@@ -1,7 +1,7 @@
 class_name ConeTargets
 extends TargetSelector
 
-## Enemies in a cone in front of the player, aimed by its movement direction.
+## Enemies in a cone in front of the player, aimed where it looks (the mouse).
 
 @export var angle: float = 90.0
 @export var max_range: float = 4.0

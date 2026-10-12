@@ -1,7 +1,7 @@
 class_name SurLeFilEffect
 extends CardEffect
 
-## While the reader stays on the slot that played it, the player's health cannot
+## Until the reader leaves the slot that played it, the player's health cannot
 ## drop below `health_ratio` of max (and, with `damage_to_armor`, damage becomes
 ## armor). Each `o` slot plays it again, so the window covers all the `o` slots.
 
@@ -16,9 +16,9 @@ func execute(ctx: EffectContext) -> void:
 	health.damage_to_armor = damage_to_armor
 	if ctx.reader == null:
 		return
-	# Next slot_entered comes before the next card_played: a following `o` of this
-	# card sets the window again right after it is cleared here.
-	await ctx.reader.slot_entered
+	# Cleared when the slot ends (also before a reload). A following `o` of this card
+	# plays it again right after, so consecutive `o` slots chain the window.
+	await ctx.reader.slot_exited
 	if is_instance_valid(health):
 		health.health_floor = 0
 		health.damage_to_armor = false

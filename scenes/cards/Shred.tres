@@ -17,5 +17,5 @@ targets = SubResource("Resource_shred_targets")
 script = ExtResource("1_card_data")
 card_name = "Shred"
 cost = 1
-description = "5 dégâts en cône devant le joueur (direction du déplacement)."
+description = "5 dégâts en cône devant le joueur (vers la souris)."
 effects = Array[ExtResource("2_card_effect")]([SubResource("Resource_shred_damage")])

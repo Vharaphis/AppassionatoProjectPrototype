@@ -129,7 +129,7 @@ func _run() -> void:
 	fil.execute(_ctx)
 	health.take_damage(1000)
 	assert(health.current_health == 19 and not health.is_dead)
-	_ctx.reader.slot_entered.emit(0, 0, false)
+	_ctx.reader.slot_exited.emit(0, 0)
 	assert(health.health_floor == 0)
 	# Berserk variant: damage becomes armor.
 	fil.damage_to_armor = true
@@ -138,9 +138,33 @@ func _run() -> void:
 	health._invulnerability_left = 0.0
 	health.take_damage(7)
 	assert(health.current_health == 19 and health.armor == armor_before + 7)
-	_ctx.reader.slot_entered.emit(0, 0, false)
+	_ctx.reader.slot_exited.emit(0, 0)
 	assert(not health.damage_to_armor)
 	_ctx.reader.free()
+
+	_test_reader_reload()
+
+## Reader: after the last slot, nothing is read for `reload_duration`, then card 0.
+func _test_reader_reload() -> void:
+	var reader = load("res://scripts/combat/card_reader.gd").new()
+	reader.sequence.append(_instance("res://scenes/cards/Shred.tres"))
+	reader.sequence.append(_instance("res://scenes/cards/Dash.tres"))
+	var entered := []
+	var reloads := []
+	reader.slot_entered.connect(func(card: int, slot: int, _plays: bool) -> void: entered.append([card, slot]))
+	reader.reload_started.connect(func(_d: float) -> void: reloads.append("start"))
+	reader.reload_finished.connect(func() -> void: reloads.append("end"))
+	reader.start()
+	var slot: float = reader.get_slot_duration()
+	for i in 3:
+		reader._process(slot)
+	# Shred (o), Dash (x, o), then the reload instead of a 4th slot.
+	assert(entered == [[0, 0], [1, 0], [1, 1]] and reloads == ["start"] and reader.is_reloading)
+	reader._process(reader.reload_duration - 0.1)
+	assert(entered.size() == 3)
+	reader._process(0.2)
+	assert(reloads == ["start", "end"] and entered.back() == [0, 0] and not reader.is_reloading)
+	reader.free()
 
 func _instance(path: String):
 	return load("res://scripts/data/card_instance.gd").new(load(path))
