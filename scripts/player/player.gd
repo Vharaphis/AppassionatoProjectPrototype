@@ -8,6 +8,8 @@ signal died
 @export var turn_speed: float = 14.0
 
 var is_alive: bool = true
+## Last movement direction on the ground plane, aims the cone attacks.
+var facing: Vector3 = Vector3.FORWARD
 
 @onready var health: HealthComponent = %HealthComponent
 @onready var hurtbox: Area3D = %Hurtbox
@@ -40,6 +42,7 @@ func _move(delta: float) -> void:
 	move_and_slide()
 
 	if direction.length_squared() > 0.01:
+		facing = direction.normalized()
 		var target_angle := atan2(direction.x, direction.z)
 		visual.rotation.y = lerp_angle(visual.rotation.y, target_angle, 1.0 - exp(-turn_speed * delta))
 

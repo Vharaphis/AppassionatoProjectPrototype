@@ -1,0 +1,75 @@
+extends SceneTree
+
+## Self-check of the card targeting and effects, on a bare arena (no spawner).
+##   godot --headless --script res://tests/test_effects.gd
+## Prints "OK" and exits 0, or stops on the first failed assert.
+## Untyped and loaded at runtime: naming the game classes here would compile them
+## before the RunState autoload exists.
+
+const PLAYER_SCENE := "res://scenes/player/player.tscn"
+const TRACKER := "res://scenes/enemies/tracker.tres"
+
+var _arena: Node3D
+var _ctx
+var _frame := 0
+
+func _process(_delta: float) -> bool:
+	_frame += 1
+	if _frame == 1:
+		# Autoloads (RunState, used by enemies) are only ready once the loop runs.
+		_setup()
+		return false
+	if _frame == 2:
+		_run()
+		print("OK")
+		quit(0)
+	return false
+
+func _setup() -> void:
+	_arena = Node3D.new()
+	root.add_child(_arena)
+	var player = load(PLAYER_SCENE).instantiate()
+	_arena.add_child(player)
+	var enemies := Node3D.new()
+	_arena.add_child(enemies)
+	_ctx = load("res://scripts/effects/effect_context.gd").new()
+	_ctx.player = player
+	_ctx.enemies_root = enemies
+
+func _run() -> void:
+	var player = _ctx.player
+	player.facing = Vector3(1, 0, 0)
+	var front = _enemy(Vector3(3, 0, 0))
+	var behind = _enemy(Vector3(-3, 0, 0))
+	var far = _enemy(Vector3(10, 0, 0))
+
+	# Cone: only in front of the movement direction, within range.
+	var cone = load("res://scripts/effects/cone_targets.gd").new()
+	assert(cone.select(_ctx) == [front])
+	player.facing = Vector3(-1, 0, 0)
+	assert(cone.select(_ctx) == [behind])
+
+	# Circle: everything within the radius, any direction.
+	var circle = load("res://scripts/effects/circle_targets.gd").new()
+	circle.radius = 4.0
+	var in_circle = circle.select(_ctx)
+	assert(in_circle.size() == 2 and in_circle.has(front) and in_circle.has(behind) and not in_circle.has(far))
+
+	# Projectiles: 4 shots, only 3 enemies, the closest ones get the extra.
+	var shots = load("res://scripts/effects/projectile_effect.gd").new()
+	shots.count = 4
+	shots.damage = 2
+	shots.execute(_ctx)
+	var targets := {}
+	for child in _arena.get_children():
+		if child.get_script() == load("res://scripts/effects/player_projectile.gd"):
+			targets[child.target] = targets.get(child.target, 0) + 1
+	assert(targets.get(front, 0) + targets.get(behind, 0) == 3 and targets.get(far, 0) == 1)
+
+func _enemy(at: Vector3):
+	var data = load(TRACKER)
+	var enemy = data.scene.instantiate()
+	enemy.data = data
+	_ctx.enemies_root.add_child(enemy)
+	enemy.global_position = at
+	return enemy
