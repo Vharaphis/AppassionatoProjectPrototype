@@ -9,7 +9,7 @@ signal dash_finished
 @export var turn_speed: float = 14.0
 
 var is_alive: bool = true
-## Last movement direction on the ground plane, aims the cone attacks.
+## Where the player looks (towards the mouse) on the ground plane, aims the cone attacks.
 var facing: Vector3 = Vector3.FORWARD
 
 var _dash_velocity: Vector3
@@ -99,10 +99,13 @@ func _move(delta: float) -> void:
 	velocity.y = 0.0
 	move_and_slide()
 
-	if direction.length_squared() > 0.01:
+	# The player looks at the mouse; without one (headless tests), along the movement.
+	if get_mouse_ground_point() != null:
+		facing = get_mouse_direction()
+	elif direction.length_squared() > 0.01:
 		facing = direction.normalized()
-		var target_angle := atan2(direction.x, direction.z)
-		visual.rotation.y = lerp_angle(visual.rotation.y, target_angle, 1.0 - exp(-turn_speed * delta))
+	var target_angle := atan2(facing.x, facing.z)
+	visual.rotation.y = lerp_angle(visual.rotation.y, target_angle, 1.0 - exp(-turn_speed * delta))
 
 func _check_enemy_contacts() -> void:
 	if health.is_invulnerable():
