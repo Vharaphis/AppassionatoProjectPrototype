@@ -11,6 +11,7 @@ amount = 2
 [resource]
 script = ExtResource("1_card_data")
 card_name = "Shield"
+type = 1
 cost = 1
 temporality = "xo"
 description = "Grants 2 armor, absorbed before HP"

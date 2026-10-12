@@ -74,7 +74,7 @@ func _step_cursor() -> void:
 	loop_completed.emit(loop_count)
 
 func _enter_current_slot() -> void:
-	# The temporality is read again on every pass: a Flow card may have changed it.
+	# The temporality is read again on every pass: a card may have changed it.
 	card_index = wrapi(card_index, 0, sequence.size())
 	var instance := sequence[card_index]
 	slot_index = wrapi(slot_index, 0, instance.slot_count())

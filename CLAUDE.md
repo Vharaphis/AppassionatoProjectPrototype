@@ -22,7 +22,7 @@ Preparation: 4 mana per round spent by the track (`cost`), 3 cards drawn per rou
 
 ## Card system
 
-- **`CardData`** (`Resource`, `.tres` in `scenes/cards/`): authored, shared, saved on disk — never mutate at runtime. `temporality` is a string of `o` (play) / `x` (cooldown) slots.
+- **`CardData`** (`Resource`, `.tres` in `scenes/cards/`): authored, shared, saved on disk — never mutate at runtime. `temporality` is a string of `o` (play) / `x` (cooldown) slots. `type` (Attaque / Préparation / Flot) and `rarity` drive the card frame (type icon from `assets/icons/`, rarity border). Cards are called "partitions" in player-facing text.
 - **`CardInstance`** (`RefCounted`): runtime wrapper created by `Deck.draw_card()`; per-run changes go in its `*_override` fields or `state`. Note the `Deck` piles store `CardData`, so instance state is lost on discard.
 - **`CardEffect`** / **`TargetSelector`**: `@abstract` Resources composed in the inspector (e.g. `DamageEffect` + `ClosestTargets`, `ArmorEffect`). New card behavior = new effect/selector subclass, not hand-coded cards.
 

@@ -4,8 +4,15 @@ class_name Card
 signal clicked(card: Card)
 signal right_clicked(card: Card)
 
-const PLAY_SYMBOL := "●"
-const COOLDOWN_SYMBOL := "○"
+## Une case de la jauge de temporalité : colorée = l'effet se joue, grise = temps mort.
+const SLOT_SYMBOL := "■"
+const COOLDOWN_COLOR := Color(0.4, 0.4, 0.42)
+const TYPE_NAMES := ["Attaque", "Préparation", "Flot"]
+const TYPE_COLORS := [Color(0.88, 0.35, 0.31), Color(0.31, 0.56, 0.88), Color(0.88, 0.75, 0.31)]
+const TYPE_ICONS := [preload("res://assets/icons/sword.svg"), preload("res://assets/icons/shield.svg"), preload("res://assets/icons/star.svg")]
+const RARITY_NAMES := ["commune", "peu commune", "rare", "mythique"]
+## Couleur de bordure par rareté.
+const RARITY_COLORS := [Color(0.6, 0.6, 0.6), Color(0.31, 0.75, 0.37), Color(0.31, 0.56, 0.88), Color(0.71, 0.37, 0.88)]
 const DIM_MODULATE := Color(0.65, 0.65, 0.7)
 ## Teinte de la carte retenue dans l'écran de récompense.
 const SELECTED_MODULATE := Color(1.15, 1.15, 0.85)
@@ -34,11 +41,19 @@ var active_slot: int = -1
 
 @onready var name_label: Label = %NameLabel
 @onready var cost_badge: Label = %CostBadge
-@onready var temporality_badge: Label = %TemporalityBadge
+@onready var type_label: Label = %TypeLabel
+@onready var temporality_badge: RichTextLabel = %TemporalityBadge
 @onready var icon_rect: TextureRect = %Icon
 @onready var description_label: RichTextLabel = %DescriptionLabel
 
+var _style := StyleBoxFlat.new()
+
 func _ready() -> void:
+	_style.bg_color = Color(0.13, 0.13, 0.15)
+	_style.set_border_width_all(3)
+	_style.set_corner_radius_all(6)
+	_style.set_content_margin_all(6)
+	add_theme_stylebox_override("panel", _style)
 	_refresh()
 
 func _gui_input(event: InputEvent) -> void:
@@ -76,20 +91,25 @@ func _refresh() -> void:
 		return
 	name_label.text = data.card_name
 	cost_badge.text = str(data.cost)
+	type_label.text = "%s · %s" % [TYPE_NAMES[data.type], RARITY_NAMES[data.rarity]]
 	description_label.text = data.description
-	if data.icon:
-		icon_rect.texture = data.icon
+	icon_rect.texture = data.icon if data.icon else TYPE_ICONS[data.type]
+	_style.border_color = RARITY_COLORS[data.rarity]
 	_refresh_temporality()
 
 func _refresh_temporality() -> void:
 	if temporality_badge == null:
 		return
+	var data := get_data()
+	var play_color: Color = TYPE_COLORS[data.type] if data else Color.WHITE
 	var temporality := card_instance.get_temporality() if card_instance else _data_temporality()
 	var slots := PackedStringArray()
 	for i in temporality.length():
-		var symbol := PLAY_SYMBOL if temporality[i] == CardData.PLAY_CHAR else COOLDOWN_SYMBOL
-		slots.append("[%s]" % symbol if i == active_slot else symbol)
-	temporality_badge.text = " ".join(slots)
+		var color := play_color if temporality[i] == CardData.PLAY_CHAR else COOLDOWN_COLOR
+		var slot := "[color=#%s]%s[/color]" % [color.to_html(false), SLOT_SYMBOL]
+		# Case lue en ce moment : surlignée pour suivre la tête de lecture.
+		slots.append("[bgcolor=#ffffff66]%s[/bgcolor]" % slot if i == active_slot else slot)
+	temporality_badge.text = "[font_size=22]%s[/font_size]" % " ".join(slots)
 
 func _data_temporality() -> String:
 	var data := get_data()
