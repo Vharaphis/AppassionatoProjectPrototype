@@ -12,8 +12,6 @@ var reader: CardReader
 ## Card currently being played and its position on the track.
 var source: CardInstance
 var card_index: int = -1
-## Card played just before this one (for future "Combo" keywords).
-var previous_card: CardInstance
 ## Multiplier applied to the numbers of the effects (for future "Ampli" cards).
 var effect_multiplier: float = 1.0
 

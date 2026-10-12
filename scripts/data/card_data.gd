@@ -6,7 +6,13 @@ const PLAY_CHAR := "o"
 ## Character used in `temporality` for a slot where the card is on cooldown.
 const COOLDOWN_CHAR := "x"
 
+## Attaque = affects enemies, Préparation = affects the player, Flot = manipulates the reading.
+enum Type { ATTACK, PREPARATION, FLOW }
+enum Rarity { COMMON, UNCOMMON, RARE, MYTHIC }
+
 @export var card_name: String = ""
+@export var type: Type = Type.ATTACK
+@export var rarity: Rarity = Rarity.COMMON
 @export var cost: int = 0
 ## Reading pattern, one character per slot of the reader:
 ## 'o' = the effects are played, 'x' = cooldown (the reader passes, nothing happens).

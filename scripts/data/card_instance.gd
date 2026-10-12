@@ -10,8 +10,6 @@ var data: CardData
 var temporality_override: String = ""
 ## Overrides the effects of the card for this run (empty = use the CardData ones).
 var effects_override: Array[CardEffect] = []
-## Free slot for the runtime state of future keywords (Évolue, Métamorphe...).
-var state: Dictionary = {}
 
 func _init(card_data: CardData = null) -> void:
 	data = card_data

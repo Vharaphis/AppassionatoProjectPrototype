@@ -11,8 +11,6 @@ extends Node
 
 var context: EffectContext
 
-var _previous_card: CardInstance
-
 func _ready() -> void:
 	context = EffectContext.new()
 	context.player = player
@@ -27,12 +25,10 @@ func play_card(instance: CardInstance, card_index: int = -1) -> void:
 		return
 	context.source = instance
 	context.card_index = card_index
-	context.previous_card = _previous_card
 	context.effect_multiplier = 1.0
 	for effect in instance.get_effects():
 		if effect:
 			effect.execute(context)
-	_previous_card = instance
 
 func _on_card_played(instance: CardInstance, card_index: int) -> void:
 	play_card(instance, card_index)
