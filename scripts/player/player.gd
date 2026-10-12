@@ -14,6 +14,7 @@ var facing: Vector3 = Vector3.FORWARD
 
 var _dash_velocity: Vector3
 var _dash_left: float = 0.0
+var _ampli_material: StandardMaterial3D
 
 @onready var health: HealthComponent = %HealthComponent
 @onready var hurtbox: Area3D = %Hurtbox
@@ -42,6 +43,16 @@ func dash(direction: Vector3, distance: float, duration: float) -> void:
 	_dash_velocity = direction.normalized() * distance / duration
 	_dash_left = duration
 	health.grant_invulnerability(duration)
+
+## Glow while an Ampli waits for the next card.
+func set_amplified(value: bool) -> void:
+	if _ampli_material == null:
+		_ampli_material = StandardMaterial3D.new()
+		_ampli_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		_ampli_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		_ampli_material.albedo_color = Color(1.0, 0.8, 0.2, 0.45)
+	for mesh in visual.find_children("*", "GeometryInstance3D", true, false):
+		(mesh as GeometryInstance3D).material_overlay = _ampli_material if value else null
 
 func is_dashing() -> bool:
 	return _dash_left > 0.0
