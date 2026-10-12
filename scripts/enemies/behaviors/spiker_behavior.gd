@@ -1,15 +1,17 @@
 class_name SpikerBehavior
 extends EnemyBehavior
 
-## Slow melee enemy: in range, it stops, locks its facing, then thrusts a spear
-## straight ahead. Sidestepping the line dodges it, running away is not needed.
+## Fast melee enemy: in range, it locks its facing and keeps advancing along it
+## while it winds up and thrusts a spear. Sidestepping the line dodges it.
 
 enum State { CHASE, WINDUP, THRUST, RECOVER }
 
-@export var attack_range: float = 3.5
-@export var windup_time: float = 0.7
+@export var attack_range: float = 4.5
+@export var windup_time: float = 0.5
 @export var thrust_duration: float = 0.2
-@export var recover_time: float = 0.9
+@export var recover_time: float = 0.5
+## Speed kept while attacking, as a fraction of the move speed (along the locked facing).
+@export var attack_move_factor: float = 0.6
 @export var thrust_damage: int = 15
 @export var thrust_length: float = 4.0
 @export var thrust_width: float = 1.2
@@ -40,11 +42,13 @@ func physics_step(enemy: Enemy, delta: float) -> Vector3:
 				_has_hit = false
 				_set_spear_z(thrust_length - 1.0)
 				_enter(State.THRUST, thrust_duration)
+			return _facing * enemy.data.move_speed * attack_move_factor
 		State.THRUST:
 			if not _has_hit:
 				_try_hit(enemy)
 			if _timer <= 0.0:
 				_enter(State.RECOVER, recover_time)
+			return _facing * enemy.data.move_speed * attack_move_factor
 		State.RECOVER:
 			_set_spear_z(lerpf(_spear_rest_z, thrust_length - 1.0, maxf(_timer, 0.0) / recover_time))
 			if _timer <= 0.0:

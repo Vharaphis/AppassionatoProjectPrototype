@@ -28,6 +28,11 @@ signal enemy_spawned(enemy: Enemy)
 @export var safe_distance: float = 6.0
 ## Distance kept from the walls.
 @export var wall_margin: float = 1.0
+## Chance that an enemy spawns in front of a moving target, so the player runs
+## into enemies instead of just leaving them behind.
+@export_range(0.0, 1.0) var forward_spawn_chance: float = 0.6
+## Width of that front cone, in degrees.
+@export var forward_spawn_arc: float = 90.0
 
 @export_group("Debug")
 ## Prints the weight of every entry at each spawn.
@@ -120,8 +125,15 @@ func _pick_spawn_position() -> Vector3:
 	var center := target.global_position
 	var best := center
 	var best_distance := -1.0
+	var heading := Vector3.ZERO
+	if target is CharacterBody3D:
+		heading = (target as CharacterBody3D).velocity
+	var forward := heading.length_squared() > 1.0 and randf() < forward_spawn_chance
 	for attempt in 10:
 		var angle := randf() * TAU
+		# Running into a wall squeezes the front cone: fall back to any angle.
+		if forward and attempt < 5:
+			angle = atan2(heading.z, heading.x) + deg_to_rad(randf_range(-forward_spawn_arc, forward_spawn_arc) / 2.0)
 		var distance := randf_range(min_spawn_distance, max_spawn_distance)
 		var candidate := _clamp_to_level(center + Vector3(cos(angle), 0.0, sin(angle)) * distance)
 		var candidate_distance := candidate.distance_to(center)
