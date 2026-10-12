@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dwol1edx015nd" path="res://scripts/enemies/enemy.gd" id="1_enemy"]
 [ext_resource type="Script" uid="uid://3typ3ejh4tfs" path="res://scripts/components/health_component.gd" id="2_health"]
+[ext_resource type="Script" path="res://scripts/enemies/behaviors/chase_behavior.gd" id="3_chase"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
 radius = 0.45
@@ -49,3 +50,6 @@ mesh = SubResource("BoxMesh_eye")
 unique_name_in_owner = true
 script = ExtResource("2_health")
 max_health = 10
+
+[node name="ChaseBehavior" type="Node" parent="."]
+script = ExtResource("3_chase")
