@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Godot **4.7** (Forward+, Jolt Physics, D3D12 on Windows) prototype written in GDScript. No build system or linter: the project is run from the Godot editor (F5). Main scene is `scenes/cardManagementScene.tscn`.
 
-Tests are plain scripts in `tests/`, run headless: `test_spawn_table.gd` and `test_card_flow.gd` (asserts, print `OK`, e.g. `godot --headless --script res://tests/test_card_flow.gd`) and `godot --headless --script res://tests/smoke_fight.gd -- <round> <game seconds>` (runs the fight at that round with an unkillable player, prints what spawned; script errors appear in the output). On Windows the GUI exe prints nothing: add `--log-file <path>` and read the file. Open the project in the editor once after adding a `class_name`, so the global class cache knows it.
+Tests are plain scripts in `tests/`, run headless: `test_spawn_table.gd`, `test_card_flow.gd` and `test_effects.gd` (asserts, print `OK`; a failed assert prints an error but does not stop the run, so read the whole log, e.g. `godot --headless --script res://tests/test_card_flow.gd`) and `godot --headless --script res://tests/smoke_fight.gd -- <round> <game seconds>` (runs the fight at that round with an unkillable player, prints what spawned; script errors appear in the output). On Windows the GUI exe prints nothing: add `--log-file <path>` and read the file. Open the project in the editor once after adding a `class_name`, so the global class cache knows it.
 
 The game is a rhythm/deckbuilder hybrid: the player arranges cards on a track, then a 3D arena fight runs where the cards are played automatically in a loop, on tempo, while enemies spawn.
 
@@ -24,7 +24,7 @@ Preparation: 4 mana per round spent by the track (`cost`), 3 cards drawn per rou
 
 - **`CardData`** (`Resource`, `.tres` in `scenes/cards/`): authored, shared, saved on disk — never mutate at runtime. `temporality` is a string of `o` (play) / `x` (cooldown) slots. `type` (Attaque / Préparation / Flot) and `rarity` drive the card frame (type icon from `assets/icons/`, rarity border). Cards are called "partitions" in player-facing text.
 - **`CardInstance`** (`RefCounted`): runtime wrapper created by `Deck.draw_card()`; per-run changes go in its `*_override` fields or `state`. Note the `Deck` piles store `CardData`, so instance state is lost on discard.
-- **`CardEffect`** / **`TargetSelector`**: `@abstract` Resources composed in the inspector (e.g. `DamageEffect` + `ClosestTargets`, `ArmorEffect`). New card behavior = new effect/selector subclass, not hand-coded cards.
+- **`CardEffect`** / **`TargetSelector`**: `@abstract` Resources composed in the inspector (e.g. `DamageEffect` + `ConeTargets` / `CircleTargets` / `ClosestTargets`, `ProjectileEffect`, `ArmorEffect`; selectors draw their area with `AreaFlash`). New card behavior = new effect/selector subclass, not hand-coded cards.
 
 ## Combat architecture (`fightingEnemiesScene`)
 
