@@ -92,7 +92,11 @@ func _refresh() -> void:
 	name_label.text = data.card_name
 	cost_badge.text = str(data.cost)
 	type_label.text = "%s · %s" % [TYPE_NAMES[data.type], RARITY_NAMES[data.rarity]]
-	description_label.text = data.description
+	var lines := PackedStringArray([data.description])
+	for effect in data.effects:
+		if effect is KeywordEffect:
+			lines.append((effect as KeywordEffect).get_label())
+	description_label.text = "\n".join(lines)
 	icon_rect.texture = data.icon if data.icon else TYPE_ICONS[data.type]
 	_style.border_color = RARITY_COLORS[data.rarity]
 	_refresh_temporality()

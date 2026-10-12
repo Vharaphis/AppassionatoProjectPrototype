@@ -66,6 +66,29 @@ func _run() -> void:
 			targets[child.target] = targets.get(child.target, 0) + 1
 	assert(targets.get(front, 0) + targets.get(behind, 0) == 3 and targets.get(far, 0) == 1)
 
+	# Berserk: strictly below 20 % of max HP, checked at read time.
+	var berserk = load("res://scripts/effects/keywords/berserk_condition.gd").new()
+	player.health.set_current_health(20)
+	assert(not berserk.is_met(_ctx))
+	player.health.set_current_health(19)
+	assert(berserk.is_met(_ctx))
+	player.health.set_current_health(100)
+
+	# Solo: only partition of its type on the track.
+	var solo = load("res://scripts/effects/keywords/solo_condition.gd").new()
+	var picking = _instance("res://scenes/cards/Picking.tres")
+	_ctx.reader = load("res://scripts/combat/card_reader.gd").new()
+	_ctx.source = picking
+	_ctx.reader.sequence.append(picking)
+	_ctx.reader.sequence.append(_instance("res://scenes/cards/ShieldUp.tres"))
+	assert(solo.is_met(_ctx))
+	_ctx.reader.sequence.append(_instance("res://scenes/cards/Shred.tres"))
+	assert(not solo.is_met(_ctx))
+	_ctx.reader.free()
+
+func _instance(path: String):
+	return load("res://scripts/data/card_instance.gd").new(load(path))
+
 func _enemy(at: Vector3):
 	var data = load(TRACKER)
 	var enemy = data.scene.instantiate()
