@@ -102,6 +102,24 @@ func _run() -> void:
 	assert(not solo.is_met(_ctx))
 	_ctx.reader.free()
 
+	# Ampli: doubles the next Attaque/Préparation read only; Flot cards (another
+	# Ampli here) neither consume it nor stack with it.
+	var runtime = load("res://scripts/combat/combat_runtime.gd").new()
+	runtime.player = player
+	runtime.enemies_root = _ctx.enemies_root
+	_arena.add_child(runtime)
+	player.facing = Vector3(0, 0, 1)
+	var dummy = _enemy(Vector3(0, 0, 3))
+	dummy.health.max_health = 100
+	dummy.health.set_current_health(100)
+	var shred = _instance("res://scenes/cards/Shred.tres")
+	runtime.play_card(_instance("res://scenes/cards/Ampli.tres"))
+	runtime.play_card(_instance("res://scenes/cards/Ampli.tres"))
+	runtime.play_card(shred)
+	assert(dummy.health.current_health == 90)
+	runtime.play_card(shred)
+	assert(dummy.health.current_health == 85)
+
 func _instance(path: String):
 	return load("res://scripts/data/card_instance.gd").new(load(path))
 

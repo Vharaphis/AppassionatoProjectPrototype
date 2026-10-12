@@ -27,6 +27,11 @@ func play_card(instance: CardInstance, card_index: int = -1) -> void:
 	context.source = instance
 	context.card_index = card_index
 	context.effect_multiplier = 1.0
+	if instance.data and instance.data.type != CardData.Type.FLOW and context.pending_multiplier != 1.0:
+		context.effect_multiplier = context.pending_multiplier
+		context.pending_multiplier = 1.0
+		if player:
+			player.set_amplified(false)
 	for effect in instance.get_effects():
 		if effect:
 			effect.execute(context)
