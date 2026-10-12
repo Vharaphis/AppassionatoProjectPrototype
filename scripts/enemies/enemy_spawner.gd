@@ -70,7 +70,7 @@ func spawn_enemy() -> Enemy:
 	if spawn_table == null or not is_instance_valid(target):
 		return null
 	var alive := get_enemies()
-	if alive.size() >= max_enemies:
+	if alive.filter(func(e: Enemy) -> bool: return e.data == null or e.data.counts_for_cap).size() >= max_enemies:
 		return null
 	var alive_by_id := {}
 	for other in alive:
@@ -80,7 +80,14 @@ func spawn_enemy() -> Enemy:
 	var data := spawn_table.pick(round_index, alive_by_id)
 	if debug_spawn:
 		_log_pick(round_index, alive_by_id, data)
-	if data == null or data.scene == null:
+	if data == null:
+		return null
+	return add_enemy(data, _pick_spawn_position())
+
+## Instantiates an enemy at a global position, outside the spawn table (also
+## used by summoners). Announced through `enemy_spawned` like any other.
+func add_enemy(data: EnemyData, global_point: Vector3) -> Enemy:
+	if data.scene == null:
 		return null
 	var enemy := data.scene.instantiate() as Enemy
 	if enemy == null:
@@ -88,9 +95,10 @@ func spawn_enemy() -> Enemy:
 		return null
 	enemy.data = data
 	enemy.target = target
+	enemy.spawner = self
 	# Position set before entering the tree: otherwise the enemy exists for one
 	# frame at the container origin, right on top of the player.
-	enemy.position = enemies_container.to_local(_pick_spawn_position())
+	enemy.position = enemies_container.to_local(_clamp_to_level(global_point))
 	enemies_container.add_child(enemy)
 	enemy_spawned.emit(enemy)
 	return enemy

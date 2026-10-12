@@ -6,6 +6,8 @@ signal died(enemy: Enemy)
 ## Stats of this enemy type. Injected by the spawner before entering the tree
 ## (not set in the scene: the EnemyData already references the scene).
 var data: EnemyData
+## Spawner that created this enemy, used by summoners to add more. May be null.
+var spawner: EnemySpawner
 ## Node the enemy chases. Set by the spawner; null = stand still.
 var target: Node3D
 

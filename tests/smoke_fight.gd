@@ -67,5 +67,6 @@ func _process(delta: float) -> bool:
 		print("states %s: %s" % [id, _states[id].keys()])
 	return true
 
-func _on_spawned(enemy: Enemy) -> void:
+# Untyped: typing Enemy here would compile the spawner before the RunState autoload exists.
+func _on_spawned(enemy) -> void:
 	_seen[enemy.data.id] = _seen.get(enemy.data.id, 0) + 1
