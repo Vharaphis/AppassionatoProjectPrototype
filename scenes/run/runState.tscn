@@ -9,10 +9,11 @@
 [ext_resource type="Resource" path="res://scenes/cards/Growl.tres" id="7_growl"]
 [ext_resource type="Resource" path="res://scenes/cards/Dash.tres" id="8_dash"]
 [ext_resource type="Resource" path="res://scenes/cards/Ampli.tres" id="9_ampli"]
+[ext_resource type="Resource" path="res://scenes/cards/SurLeFil.tres" id="10_sur_le_fil"]
 
 [node name="RunState" type="Node"]
 script = ExtResource("1_run_state")
-reward_pool = Array[ExtResource("3_card_data")]([ExtResource("4_shred"), ExtResource("5_shield_up"), ExtResource("6_picking"), ExtResource("7_growl"), ExtResource("8_dash"), ExtResource("9_ampli")])
+reward_pool = Array[ExtResource("3_card_data")]([ExtResource("4_shred"), ExtResource("5_shield_up"), ExtResource("6_picking"), ExtResource("7_growl"), ExtResource("8_dash"), ExtResource("9_ampli"), ExtResource("10_sur_le_fil")])
 
 [node name="Deck" type="Node" parent="."]
 script = ExtResource("2_deck")
