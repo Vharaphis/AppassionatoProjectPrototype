@@ -25,6 +25,8 @@ func is_completed() -> bool:
 	return _completed
 
 func _on_enemy_spawned(enemy: Enemy) -> void:
+	if enemy.data and not enemy.data.counts_for_objective:
+		return
 	enemy.died.connect(_on_enemy_died)
 
 func _on_enemy_died(_enemy: Enemy) -> void:

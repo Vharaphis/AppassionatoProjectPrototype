@@ -28,6 +28,11 @@ signal enemy_spawned(enemy: Enemy)
 @export var safe_distance: float = 6.0
 ## Distance kept from the walls.
 @export var wall_margin: float = 1.0
+## Chance that an enemy spawns in front of a moving target, so the player runs
+## into enemies instead of just leaving them behind.
+@export_range(0.0, 1.0) var forward_spawn_chance: float = 0.6
+## Width of that front cone, in degrees.
+@export var forward_spawn_arc: float = 90.0
 
 @export_group("Debug")
 ## Prints the weight of every entry at each spawn.
@@ -49,11 +54,12 @@ func start() -> void:
 	_timer.wait_time = spawn_interval
 	_timer.start()
 
-## Stops spawning and freezes the enemies already spawned.
+## Stops spawning, freezes the enemies already spawned and clears their shots.
 func stop() -> void:
 	_timer.stop()
 	for enemy in get_enemies():
 		enemy.target = null
+	get_tree().call_group(Projectile.GROUP, "queue_free")
 
 func get_enemies() -> Array[Enemy]:
 	var enemies: Array[Enemy] = []
@@ -69,7 +75,7 @@ func spawn_enemy() -> Enemy:
 	if spawn_table == null or not is_instance_valid(target):
 		return null
 	var alive := get_enemies()
-	if alive.size() >= max_enemies:
+	if alive.filter(func(e: Enemy) -> bool: return e.data == null or e.data.counts_for_cap).size() >= max_enemies:
 		return null
 	var alive_by_id := {}
 	for other in alive:
@@ -79,7 +85,14 @@ func spawn_enemy() -> Enemy:
 	var data := spawn_table.pick(round_index, alive_by_id)
 	if debug_spawn:
 		_log_pick(round_index, alive_by_id, data)
-	if data == null or data.scene == null:
+	if data == null:
+		return null
+	return add_enemy(data, _pick_spawn_position())
+
+## Instantiates an enemy at a global position, outside the spawn table (also
+## used by summoners). Announced through `enemy_spawned` like any other.
+func add_enemy(data: EnemyData, global_point: Vector3) -> Enemy:
+	if data.scene == null:
 		return null
 	var enemy := data.scene.instantiate() as Enemy
 	if enemy == null:
@@ -87,9 +100,10 @@ func spawn_enemy() -> Enemy:
 		return null
 	enemy.data = data
 	enemy.target = target
+	enemy.spawner = self
 	# Position set before entering the tree: otherwise the enemy exists for one
 	# frame at the container origin, right on top of the player.
-	enemy.position = enemies_container.to_local(_pick_spawn_position())
+	enemy.position = enemies_container.to_local(_clamp_to_level(global_point))
 	enemies_container.add_child(enemy)
 	enemy_spawned.emit(enemy)
 	return enemy
@@ -111,8 +125,15 @@ func _pick_spawn_position() -> Vector3:
 	var center := target.global_position
 	var best := center
 	var best_distance := -1.0
+	var heading := Vector3.ZERO
+	if target is CharacterBody3D:
+		heading = (target as CharacterBody3D).velocity
+	var forward := heading.length_squared() > 1.0 and randf() < forward_spawn_chance
 	for attempt in 10:
 		var angle := randf() * TAU
+		# Running into a wall squeezes the front cone: fall back to any angle.
+		if forward and attempt < 5:
+			angle = atan2(heading.z, heading.x) + deg_to_rad(randf_range(-forward_spawn_arc, forward_spawn_arc) / 2.0)
 		var distance := randf_range(min_spawn_distance, max_spawn_distance)
 		var candidate := _clamp_to_level(center + Vector3(cos(angle), 0.0, sin(angle)) * distance)
 		var candidate_distance := candidate.distance_to(center)

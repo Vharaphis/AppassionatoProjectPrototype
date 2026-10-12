@@ -15,4 +15,4 @@ func execute(ctx: EffectContext) -> void:
 		return
 	var damage := ctx.scale_amount(amount)
 	for enemy in targets.select(ctx):
-		enemy.take_damage(damage)
+		enemy.take_damage(damage, ctx.player.global_position if ctx.player else Vector3.INF)
