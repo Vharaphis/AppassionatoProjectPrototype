@@ -21,6 +21,8 @@ var _minions: Array[Enemy] = []
 
 func _ready() -> void:
 	super()
+	# Shielders guard summoners as well as shooters.
+	get_parent().add_to_group(&"ranged")
 	_timer = summon_interval
 
 func physics_step(enemy: Enemy, delta: float) -> Vector3:

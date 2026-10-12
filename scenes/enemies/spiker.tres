@@ -9,6 +9,6 @@ id = &"spiker"
 display_name = "Spiker"
 scene = ExtResource("2_scene")
 max_health = 14
-move_speed = 2.8
+move_speed = 4.2
 contact_damage = 5
 turn_speed = 10.0

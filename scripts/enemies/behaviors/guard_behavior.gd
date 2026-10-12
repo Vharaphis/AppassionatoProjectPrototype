@@ -2,17 +2,24 @@ class_name GuardBehavior
 extends EnemyBehavior
 
 ## Stands between the player and the nearest ranged ally, facing the player,
-## and takes reduced damage from the front. Chases when no ranged ally is alive.
+## and takes reduced damage from the front. Chases when no ranged ally is free.
 
 enum State { CHASE, GUARD }
+
+const GROUP := &"guard_behaviors"
 
 @export var frontal_reduction: float = 0.7
 @export var front_arc_degrees: float = 120.0
 @export var guard_distance: float = 3.0
+## Shielders guarding the same ally at once; the others pick another ally or chase.
+@export var max_guards_per_ward: int = 2
 @export var reduced_hit_color: Color = Color(0.6, 0.8, 1.0, 0.8)
 
 var state: State = State.CHASE
 var _ward: Enemy
+
+func _ready() -> void:
+	add_to_group(GROUP)
 
 func physics_step(enemy: Enemy, _delta: float) -> Vector3:
 	if not _is_alive(_ward):
@@ -51,13 +58,21 @@ func _pick_ward(enemy: Enemy) -> Enemy:
 	var best_distance := INF
 	for node in get_tree().get_nodes_in_group(&"ranged"):
 		var ally := node as Enemy
-		if not _is_alive(ally) or ally == enemy:
+		if not _is_alive(ally) or ally == enemy or _guard_count(ally) >= max_guards_per_ward:
 			continue
 		var distance := ally.global_position.distance_squared_to(enemy.global_position)
 		if distance < best_distance:
 			best = ally
 			best_distance = distance
 	return best
+
+## Other shielders currently guarding `ally`.
+func _guard_count(ally: Enemy) -> int:
+	var count := 0
+	for node in get_tree().get_nodes_in_group(GROUP):
+		if node != self and is_instance_valid(node._ward) and node._ward == ally:
+			count += 1
+	return count
 
 func _is_alive(other: Enemy) -> bool:
 	return is_instance_valid(other) and not other.is_queued_for_deletion() and not other.health.is_dead
