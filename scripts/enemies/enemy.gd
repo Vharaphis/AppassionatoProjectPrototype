@@ -82,7 +82,9 @@ func clear_tint() -> void:
 
 ## `source_position`: where the hit comes from, Vector3.INF when unknown
 ## (used by enemies that react to the hit direction).
-func take_damage(amount: int, _source_position: Vector3 = Vector3.INF) -> bool:
+func take_damage(amount: int, source_position: Vector3 = Vector3.INF) -> bool:
+	if behavior and data:
+		amount = behavior.modify_damage(self, amount, source_position)
 	return health.take_damage(amount)
 
 func _find_behavior() -> EnemyBehavior:

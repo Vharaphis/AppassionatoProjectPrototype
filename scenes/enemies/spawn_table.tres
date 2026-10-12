@@ -6,6 +6,7 @@
 [ext_resource type="Resource" path="res://scenes/enemies/rusher.tres" id="4_rusher"]
 [ext_resource type="Resource" path="res://scenes/enemies/spiker.tres" id="5_spiker"]
 [ext_resource type="Resource" path="res://scenes/enemies/spitter.tres" id="6_spitter"]
+[ext_resource type="Resource" path="res://scenes/enemies/shielder.tres" id="7_shielder"]
 
 [sub_resource type="Resource" id="Resource_tracker_entry"]
 script = ExtResource("2_entry")
@@ -47,6 +48,16 @@ min_weight = 0.0
 max_weight = 25.0
 max_alive = 6
 
+[sub_resource type="Resource" id="Resource_shielder_entry"]
+script = ExtResource("2_entry")
+enemy = ExtResource("7_shielder")
+min_round = 5
+base_weight = 10.0
+weight_per_round = 5.0
+min_weight = 0.0
+max_weight = 20.0
+max_alive = 3
+
 [resource]
 script = ExtResource("1_table")
-entries = Array[ExtResource("2_entry")]([SubResource("Resource_tracker_entry"), SubResource("Resource_rusher_entry"), SubResource("Resource_spiker_entry"), SubResource("Resource_spitter_entry")])
+entries = Array[ExtResource("2_entry")]([SubResource("Resource_tracker_entry"), SubResource("Resource_rusher_entry"), SubResource("Resource_spiker_entry"), SubResource("Resource_spitter_entry"), SubResource("Resource_shielder_entry")])

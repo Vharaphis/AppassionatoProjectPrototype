@@ -15,3 +15,7 @@ func get_facing(_enemy: Enemy) -> Vector3:
 ## Contact damage dealt to the player right now.
 func get_contact_damage(enemy: Enemy) -> int:
 	return enemy.data.contact_damage
+
+## Damage actually taken from a hit. `source_position` is Vector3.INF when unknown.
+func modify_damage(_enemy: Enemy, amount: int, _source_position: Vector3) -> int:
+	return amount
