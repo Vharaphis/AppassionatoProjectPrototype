@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" uid="uid://v3hbk2005353" path="res://scripts/data/card_data.gd" id="1_card_data"]
+[ext_resource type="Script" uid="uid://drcxodvl17073" path="res://scripts/effects/card_effect.gd" id="2_card_effect"]
+[ext_resource type="Script" path="res://scripts/effects/sur_le_fil_effect.gd" id="3_sur_le_fil"]
+[ext_resource type="Script" path="res://scripts/effects/keywords/keyword_effect.gd" id="4_keyword"]
+[ext_resource type="Script" path="res://scripts/effects/keywords/berserk_condition.gd" id="5_berserk"]
+
+[sub_resource type="Resource" id="Resource_fil_berserk"]
+script = ExtResource("5_berserk")
+
+[sub_resource type="Resource" id="Resource_fil_armor"]
+script = ExtResource("3_sur_le_fil")
+damage_to_armor = true
+
+[sub_resource type="Resource" id="Resource_fil_floor"]
+script = ExtResource("3_sur_le_fil")
+
+[sub_resource type="Resource" id="Resource_fil_keyword"]
+script = ExtResource("4_keyword")
+condition = SubResource("Resource_fil_berserk")
+text = "les dégâts encaissés sont convertis en armure."
+effects = Array[ExtResource("2_card_effect")]([SubResource("Resource_fil_armor")])
+otherwise = Array[ExtResource("2_card_effect")]([SubResource("Resource_fil_floor")])
+
+[resource]
+script = ExtResource("1_card_data")
+card_name = "Sur le fil"
+type = 2
+rarity = 3
+cost = 3
+temporality = "xoo"
+description = "Pendant ses cases jouées, les PV ne peuvent pas tomber sous 19 %."
+effects = Array[ExtResource("2_card_effect")]([SubResource("Resource_fil_keyword")])

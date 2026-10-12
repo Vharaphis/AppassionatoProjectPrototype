@@ -120,6 +120,28 @@ func _run() -> void:
 	runtime.play_card(shred)
 	assert(dummy.health.current_health == 85)
 
+	# Sur le fil: floor at 19 % during the window, cleared on the next slot.
+	var fil = load("res://scripts/effects/sur_le_fil_effect.gd").new()
+	var health = player.health
+	health._invulnerability_left = 0.0
+	health.set_current_health(50)
+	_ctx.reader = load("res://scripts/combat/card_reader.gd").new()
+	fil.execute(_ctx)
+	health.take_damage(1000)
+	assert(health.current_health == 19 and not health.is_dead)
+	_ctx.reader.slot_entered.emit(0, 0, false)
+	assert(health.health_floor == 0)
+	# Berserk variant: damage becomes armor.
+	fil.damage_to_armor = true
+	fil.execute(_ctx)
+	var armor_before: int = health.armor
+	health._invulnerability_left = 0.0
+	health.take_damage(7)
+	assert(health.current_health == 19 and health.armor == armor_before + 7)
+	_ctx.reader.slot_entered.emit(0, 0, false)
+	assert(not health.damage_to_armor)
+	_ctx.reader.free()
+
 func _instance(path: String):
 	return load("res://scripts/data/card_instance.gd").new(load(path))
 

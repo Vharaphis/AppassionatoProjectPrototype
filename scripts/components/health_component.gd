@@ -14,6 +14,10 @@ var current_health: int
 ## Absorbs incoming damage before health. Granted by cards.
 var armor: int = 0
 var is_dead: bool = false
+## Damage never takes health below this (Sur le fil); health already lower is left as is.
+var health_floor: int = 0
+## Damage becomes armor instead of hurting (Sur le fil + Berserk).
+var damage_to_armor: bool = false
 
 var _invulnerability_left: float = 0.0
 
@@ -35,13 +39,18 @@ func is_invulnerable() -> bool:
 func take_damage(amount: int) -> bool:
 	if is_dead or amount <= 0 or is_invulnerable():
 		return false
+	if damage_to_armor:
+		_invulnerability_left = invulnerability_duration
+		damaged.emit(amount)
+		add_armor(amount)
+		return true
 	var remaining := amount
 	if armor > 0:
 		var absorbed := mini(armor, remaining)
 		armor -= absorbed
 		remaining -= absorbed
 		armor_changed.emit(armor)
-	current_health = maxi(current_health - remaining, 0)
+	current_health = maxi(current_health - remaining, mini(current_health, health_floor))
 	_invulnerability_left = invulnerability_duration
 	damaged.emit(amount)
 	health_changed.emit(current_health, max_health)
