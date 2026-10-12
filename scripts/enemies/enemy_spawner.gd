@@ -17,8 +17,6 @@ signal enemy_spawned(enemy: Enemy)
 @export var spawn_interval: float = 1.0
 @export var enemies_per_spawn: int = 1
 @export var max_enemies: int = 15
-## Round used by the spawn table. 0 = the run's current round (RunState).
-@export var round_override: int = 0
 
 @export_group("Placement")
 ## Enemies appear on a ring around the target, between these two distances.
@@ -69,7 +67,7 @@ func get_enemies() -> Array[Enemy]:
 	return enemies
 
 func get_round() -> int:
-	return round_override if round_override > 0 else RunState.round_index
+	return RunState.round_index
 
 func spawn_enemy() -> Enemy:
 	if spawn_table == null or not is_instance_valid(target):
