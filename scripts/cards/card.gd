@@ -93,9 +93,7 @@ func _refresh() -> void:
 	cost_badge.text = str(data.cost)
 	type_label.text = "%s · %s" % [TYPE_NAMES[data.type], RARITY_NAMES[data.rarity]]
 	var lines := PackedStringArray([data.description])
-	for effect in data.effects:
-		if effect is KeywordEffect:
-			lines.append((effect as KeywordEffect).get_label())
+	_append_keyword_labels(data.effects, lines)
 	description_label.text = "\n".join(lines)
 	icon_rect.texture = data.icon if data.icon else TYPE_ICONS[data.type]
 	_style.border_color = RARITY_COLORS[data.rarity]
@@ -118,3 +116,12 @@ func _refresh_temporality() -> void:
 func _data_temporality() -> String:
 	var data := get_data()
 	return data.temporality if data else ""
+
+## Keyword lines of the card, including keywords nested in another effect
+## (e.g. the Berserk played at the end of a dash).
+func _append_keyword_labels(effects: Array[CardEffect], lines: PackedStringArray) -> void:
+	for effect in effects:
+		if effect is KeywordEffect:
+			lines.append((effect as KeywordEffect).get_label())
+		elif effect is DashEffect:
+			_append_keyword_labels((effect as DashEffect).on_end, lines)

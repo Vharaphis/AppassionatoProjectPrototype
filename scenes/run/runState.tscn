@@ -6,10 +6,12 @@
 [ext_resource type="Resource" path="res://scenes/cards/Shred.tres" id="4_shred"]
 [ext_resource type="Resource" path="res://scenes/cards/ShieldUp.tres" id="5_shield_up"]
 [ext_resource type="Resource" path="res://scenes/cards/Picking.tres" id="6_picking"]
+[ext_resource type="Resource" path="res://scenes/cards/Growl.tres" id="7_growl"]
+[ext_resource type="Resource" path="res://scenes/cards/Dash.tres" id="8_dash"]
 
 [node name="RunState" type="Node"]
 script = ExtResource("1_run_state")
-reward_pool = Array[ExtResource("3_card_data")]([ExtResource("4_shred"), ExtResource("5_shield_up"), ExtResource("6_picking")])
+reward_pool = Array[ExtResource("3_card_data")]([ExtResource("4_shred"), ExtResource("5_shield_up"), ExtResource("6_picking"), ExtResource("7_growl"), ExtResource("8_dash")])
 
 [node name="Deck" type="Node" parent="."]
 script = ExtResource("2_deck")

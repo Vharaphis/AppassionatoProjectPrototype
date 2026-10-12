@@ -24,6 +24,10 @@ func _physics_process(delta: float) -> void:
 	if _invulnerability_left > 0.0:
 		_invulnerability_left = maxf(_invulnerability_left - delta, 0.0)
 
+## Ignores damage for `seconds` (keeps the longest of the current and new ones).
+func grant_invulnerability(seconds: float) -> void:
+	_invulnerability_left = maxf(_invulnerability_left, seconds)
+
 func is_invulnerable() -> bool:
 	return _invulnerability_left > 0.0
 
