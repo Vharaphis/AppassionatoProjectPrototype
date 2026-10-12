@@ -35,6 +35,11 @@ signal round_finished(round_index: int)
 ## Doit correspondre au max_health du HealthComponent de player.tscn.
 @export var player_max_health: int = 100
 
+@export_group("Debug")
+## Manche de départ d'une run neuve, pour tester une manche avancée : objectif,
+## difficulté et table de spawn suivent tous. 0 = manche 1.
+@export var debug_start_round: int = 0
+
 @onready var deck: Deck = $Deck
 
 ## Cartes verrouillées sur la piste pendant la préparation, lues par le combat.
@@ -48,7 +53,7 @@ func _ready() -> void:
 
 ## Repart d'une run neuve : deck d'origine, PV pleins, manche 1.
 func reset_run() -> void:
-	round_index = 1
+	round_index = debug_start_round if debug_start_round > 0 else 1
 	player_health = player_max_health
 	kills_total = 0
 	card_sequence.clear()
