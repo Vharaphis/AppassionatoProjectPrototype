@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1_enemy_data"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/spitter.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_enemy_data")
+id = &"spitter"
+display_name = "Spitter"
+scene = ExtResource("2_scene")
+max_health = 8
+move_speed = 2.5
+contact_damage = 5
+turn_speed = 10.0

@@ -61,7 +61,7 @@ func _process(delta: float) -> bool:
 	for enemy in get_nodes_in_group("enemies"):
 		var id: StringName = enemy.data.id if enemy.data else &"?"
 		alive[id] = alive.get(id, 0) + 1
-	print("round %d  spawned %s" % [_round, _seen])
+	print("round %d  spawned %s  live projectiles %d" % [_round, _seen, get_nodes_in_group(&"enemy_projectiles").size()])
 	print("alive %s  kills %d  player damage %d  nodes %d" % [alive, _fight.get_node("%CombatObjective").kills, _player_damage, get_node_count()])
 	for id in _states:
 		print("states %s: %s" % [id, _states[id].keys()])

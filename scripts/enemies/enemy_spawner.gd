@@ -49,11 +49,12 @@ func start() -> void:
 	_timer.wait_time = spawn_interval
 	_timer.start()
 
-## Stops spawning and freezes the enemies already spawned.
+## Stops spawning, freezes the enemies already spawned and clears their shots.
 func stop() -> void:
 	_timer.stop()
 	for enemy in get_enemies():
 		enemy.target = null
+	get_tree().call_group(Projectile.GROUP, "queue_free")
 
 func get_enemies() -> Array[Enemy]:
 	var enemies: Array[Enemy] = []
