@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://scripts/data/spawn_entry.gd" id="2_entry"]
 [ext_resource type="Resource" path="res://scenes/enemies/tracker.tres" id="3_tracker"]
 [ext_resource type="Resource" path="res://scenes/enemies/rusher.tres" id="4_rusher"]
+[ext_resource type="Resource" path="res://scenes/enemies/spiker.tres" id="5_spiker"]
 
 [sub_resource type="Resource" id="Resource_tracker_entry"]
 script = ExtResource("2_entry")
@@ -25,6 +26,16 @@ min_weight = 0.0
 max_weight = 30.0
 max_alive = 0
 
+[sub_resource type="Resource" id="Resource_spiker_entry"]
+script = ExtResource("2_entry")
+enemy = ExtResource("5_spiker")
+min_round = 3
+base_weight = 10.0
+weight_per_round = 5.0
+min_weight = 0.0
+max_weight = 25.0
+max_alive = 0
+
 [resource]
 script = ExtResource("1_table")
-entries = Array[ExtResource("2_entry")]([SubResource("Resource_tracker_entry"), SubResource("Resource_rusher_entry")])
+entries = Array[ExtResource("2_entry")]([SubResource("Resource_tracker_entry"), SubResource("Resource_rusher_entry"), SubResource("Resource_spiker_entry")])

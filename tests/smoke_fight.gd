@@ -14,6 +14,7 @@ var _duration := 30.0
 var _elapsed := 0.0
 var _seen := {}
 var _states := {}
+var _player_damage := 0
 var _started := false
 var _fight: Node
 
@@ -48,6 +49,7 @@ func _process(delta: float) -> bool:
 		player.health.max_health = 1000000
 		player.health.set_current_health(1000000)
 		_fight.get_node("%EnemySpawner").enemy_spawned.connect(_on_spawned)
+		player.health.damaged.connect(func(amount: int) -> void: _player_damage += amount)
 	for enemy in get_nodes_in_group("enemies"):
 		if enemy.data and enemy.behavior and "state" in enemy.behavior:
 			var states: Dictionary = _states.get_or_add(enemy.data.id, {})
@@ -60,7 +62,7 @@ func _process(delta: float) -> bool:
 		var id: StringName = enemy.data.id if enemy.data else &"?"
 		alive[id] = alive.get(id, 0) + 1
 	print("round %d  spawned %s" % [_round, _seen])
-	print("alive %s  kills %d  nodes %d" % [alive, _fight.get_node("%CombatObjective").kills, get_node_count()])
+	print("alive %s  kills %d  player damage %d  nodes %d" % [alive, _fight.get_node("%CombatObjective").kills, _player_damage, get_node_count()])
 	for id in _states:
 		print("states %s: %s" % [id, _states[id].keys()])
 	return true
