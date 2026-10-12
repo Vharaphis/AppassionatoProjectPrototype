@@ -59,7 +59,7 @@ func _next_target() -> Enemy:
 	var best_distance := bounce_range
 	for node in get_tree().get_nodes_in_group("enemies"):
 		var enemy := node as Enemy
-		if not _is_alive(enemy) or enemy == _hit.back():
+		if not _is_alive(enemy) or (not _hit.is_empty() and is_same(enemy, _hit.back())):
 			continue
 		var distance := enemy.global_position.distance_to(global_position)
 		var fresh := not _hit.has(enemy)
@@ -71,5 +71,6 @@ func _next_target() -> Enemy:
 			best_distance = distance
 	return best
 
-func _is_alive(enemy: Enemy) -> bool:
+# Untyped on purpose: a typed Enemy argument errors on a freed target before the check runs.
+func _is_alive(enemy) -> bool:
 	return is_instance_valid(enemy) and not enemy.is_queued_for_deletion() and not enemy.health.is_dead

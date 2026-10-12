@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://lwg44yfou1ai"]
 
 [ext_resource type="Script" uid="uid://bk7ijui1t20mw" path="res://scripts/cards/card.gd" id="1_0qqw3"]
+[ext_resource type="Script" uid="uid://drcxodvl17073" path="res://scripts/effects/card_effect.gd" id="2_73nwn"]
 [ext_resource type="Script" uid="uid://v3hbk2005353" path="res://scripts/data/card_data.gd" id="2_jl6rh"]
 
 [sub_resource type="Resource" id="Resource_un5qg"]
@@ -37,7 +38,7 @@ horizontal_alignment = 1
 
 [node name="Icon" type="TextureRect" parent="Layout" unique_id=310574023]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 56)
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 mouse_filter = 2
 expand_mode = 1
@@ -57,7 +58,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
-bbcode_enabled = true
 theme_override_font_sizes/normal_font_size = 12
+bbcode_enabled = true
 fit_content = true
 scroll_active = false

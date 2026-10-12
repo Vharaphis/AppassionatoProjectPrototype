@@ -69,11 +69,24 @@ func _gui_input(event: InputEvent) -> void:
 func _get_drag_data(_at_position: Vector2) -> Variant:
 	if locked or card_instance == null:
 		return null
-	var preview := (load(scene_file_path) as PackedScene).instantiate() as Card
-	preview.card_instance = card_instance
-	preview.modulate.a = 0.8
+	var card := (load(scene_file_path) as PackedScene).instantiate() as Card
+	card.card_instance = card_instance
+	card.modulate.a = 0.85
+	# Wrapped in a plain Control: alone, the preview card stretches to the bottom of
+	# the window. The wrapper also centers the card on the mouse.
+	var preview := Control.new()
+	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	preview.add_child(card)
+	card.size = size
+	card.position = -size / 2.0
 	set_drag_preview(preview)
+	# The original stays in place until dropped: fade it so the dragged copy reads as "the" card.
+	modulate.a = 0.3
 	return self
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_DRAG_END:
+		modulate.a = 1.0
 
 ## Drops on a card go to its container (hand or track), at the card's position.
 func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
