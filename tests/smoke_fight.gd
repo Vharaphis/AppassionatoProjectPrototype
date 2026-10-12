@@ -3,6 +3,7 @@ extends SceneTree
 ## Runs the fight scene headless at a given round and reports what spawned.
 ##   godot --headless --script res://tests/smoke_fight.gd -- <round> <game seconds>
 ## Script errors show up in the output; the player is made unkillable.
+## For behaviours with a `state` variable, also reports the states reached.
 
 const FIGHT_SCENE := "res://scenes/fightingEnemiesScene.tscn"
 ## Wall-clock safety so a broken scene never hangs the run.
@@ -12,6 +13,7 @@ var _round := 8
 var _duration := 30.0
 var _elapsed := 0.0
 var _seen := {}
+var _states := {}
 var _started := false
 var _fight: Node
 
@@ -46,14 +48,21 @@ func _process(delta: float) -> bool:
 		player.health.max_health = 1000000
 		player.health.set_current_health(1000000)
 		_fight.get_node("%EnemySpawner").enemy_spawned.connect(_on_spawned)
+	for enemy in get_nodes_in_group("enemies"):
+		if enemy.data and enemy.behavior and "state" in enemy.behavior:
+			var states: Dictionary = _states.get_or_add(enemy.data.id, {})
+			states[enemy.behavior.State.find_key(enemy.behavior.state)] = true
 	_elapsed += delta
 	if _elapsed < _duration:
 		return false
 	var alive := {}
-	for enemy in _fight.get_node("%EnemySpawner").get_enemies():
+	for enemy in get_nodes_in_group("enemies"):
 		var id: StringName = enemy.data.id if enemy.data else &"?"
 		alive[id] = alive.get(id, 0) + 1
-	print("round %d  spawned %s  alive %s  kills %d  nodes %d" % [_round, _seen, alive, _fight.get_node("%CombatObjective").kills, get_node_count()])
+	print("round %d  spawned %s" % [_round, _seen])
+	print("alive %s  kills %d  nodes %d" % [alive, _fight.get_node("%CombatObjective").kills, get_node_count()])
+	for id in _states:
+		print("states %s: %s" % [id, _states[id].keys()])
 	return true
 
 func _on_spawned(enemy: Enemy) -> void:

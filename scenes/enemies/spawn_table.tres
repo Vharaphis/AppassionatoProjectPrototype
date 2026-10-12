@@ -1,16 +1,30 @@
 [gd_resource type="Resource" script_class="SpawnTable" format=3 uid="uid://df476nbyj7i5f"]
 
-[ext_resource type="Script" uid="uid://dxdw58o1bqgeq" path="res://scripts/data/spawn_table.gd" id="1_table"]
-[ext_resource type="Script" uid="uid://csh6oi2pmue0n" path="res://scripts/data/spawn_entry.gd" id="2_entry"]
+[ext_resource type="Script" path="res://scripts/data/spawn_table.gd" id="1_table"]
+[ext_resource type="Script" path="res://scripts/data/spawn_entry.gd" id="2_entry"]
 [ext_resource type="Resource" path="res://scenes/enemies/tracker.tres" id="3_tracker"]
+[ext_resource type="Resource" path="res://scenes/enemies/rusher.tres" id="4_rusher"]
 
 [sub_resource type="Resource" id="Resource_tracker_entry"]
 script = ExtResource("2_entry")
 enemy = ExtResource("3_tracker")
+min_round = 1
 base_weight = 100.0
 weight_per_round = -10.0
 min_weight = 20.0
+max_weight = 100.0
+max_alive = 0
+
+[sub_resource type="Resource" id="Resource_rusher_entry"]
+script = ExtResource("2_entry")
+enemy = ExtResource("4_rusher")
+min_round = 2
+base_weight = 20.0
+weight_per_round = 5.0
+min_weight = 0.0
+max_weight = 30.0
+max_alive = 0
 
 [resource]
 script = ExtResource("1_table")
-entries = Array[ExtResource("2_entry")]([SubResource("Resource_tracker_entry")])
+entries = Array[ExtResource("2_entry")]([SubResource("Resource_tracker_entry"), SubResource("Resource_rusher_entry")])

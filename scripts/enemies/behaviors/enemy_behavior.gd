@@ -7,3 +7,11 @@ extends Node
 
 ## Returns the velocity the enemy wants this physics frame.
 @abstract func physics_step(enemy: Enemy, delta: float) -> Vector3
+
+## Direction the enemy should face. Vector3.ZERO = face where it moves.
+func get_facing(_enemy: Enemy) -> Vector3:
+	return Vector3.ZERO
+
+## Contact damage dealt to the player right now.
+func get_contact_damage(enemy: Enemy) -> int:
+	return enemy.data.contact_damage
