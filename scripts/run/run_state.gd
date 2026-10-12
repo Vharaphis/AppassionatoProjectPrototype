@@ -31,6 +31,11 @@ signal round_finished(round_index: int)
 ## Cartes tirables en récompense. Un pool de N cartes ne peut pas proposer plus de
 ## N choix distincts : au-delà, les doublons sont assumés (cf. roll_reward).
 @export var reward_pool: Array[CardData] = []
+## Poids de tirage par rareté (commune, peu commune, rare, mythique) :
+## `base + par manche × (manche - 1)`, jamais sous le minimum. Valeurs provisoires.
+@export var rarity_base_weights: Array[float] = [60.0, 30.0, 8.0, 2.0]
+@export var rarity_weights_per_round: Array[float] = [-4.0, 1.5, 1.5, 1.0]
+@export var rarity_min_weights: Array[float] = [15.0, 0.0, 0.0, 0.0]
 
 @export_group("Difficulté")
 @export var base_spawn_interval: float = 1.0
@@ -97,20 +102,43 @@ func discard_sequence() -> void:
 		deck.discard(instance)
 	card_sequence.clear()
 
-## Tire les cartes proposées en récompense. Cartes distinctes tant que le pool le
-## permet, doublons au-delà (pool de 2 cartes = 3 propositions impossibles à
-## rendre toutes différentes).
+func rarity_weight(rarity: CardData.Rarity, round_number: int) -> float:
+	return maxf(rarity_min_weights[rarity], rarity_base_weights[rarity] + rarity_weights_per_round[rarity] * (round_number - 1))
+
+## Tire les cartes proposées en récompense, pondérées par rareté selon la manche.
+## Cartes distinctes tant que le pool le permet, doublons au-delà (pool de 2
+## cartes = 3 propositions impossibles à rendre toutes différentes).
 func roll_reward() -> Array[CardData]:
 	var picks: Array[CardData] = []
 	if reward_pool.is_empty():
 		push_warning("RunState.reward_pool est vide : aucune récompense à proposer.")
 		return picks
-	var bag := reward_pool.duplicate()
-	bag.shuffle()
+	var bag: Array[CardData] = []
+	for data in reward_pool:
+		if data and not bag.has(data):
+			bag.append(data)
 	for i in reward_choices:
-		var data: CardData = bag[i] if i < bag.size() else reward_pool.pick_random()
+		if bag.is_empty():
+			picks.append(reward_pool.pick_random())
+			continue
+		var data := _pick_weighted(bag)
+		bag.erase(data)
 		picks.append(data)
 	return picks
+
+func _pick_weighted(cards: Array[CardData]) -> CardData:
+	var total := 0.0
+	for data in cards:
+		total += rarity_weight(data.rarity, round_index)
+	if total <= 0.0:
+		return cards.pick_random()
+	var roll := randf() * total
+	for data in cards:
+		roll -= rarity_weight(data.rarity, round_index)
+		if roll < 0.0:
+			return data
+	# Float rounding can leave roll at ~0 after the loop.
+	return cards.back()
 
 func add_card_to_deck(data: CardData) -> void:
 	deck.add_card(data)
