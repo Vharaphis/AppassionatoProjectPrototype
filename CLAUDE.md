@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Godot **4.7** (Forward+, Jolt Physics, D3D12 on Windows) prototype written in GDScript. No build system or linter: the project is run from the Godot editor (F5). Main scene is `scenes/cardManagementScene.tscn`.
 
-Tests are plain assert scripts in `tests/`, run headless: `godot --headless --script res://tests/test_spawn_table.gd` (prints `OK`). Open the project in the editor once after adding a `class_name`, so the global class cache knows it.
+Tests are plain scripts in `tests/`, run headless: `godot --headless --script res://tests/test_spawn_table.gd` (asserts, prints `OK`) and `godot --headless --script res://tests/smoke_fight.gd -- <round> <game seconds>` (runs the fight at that round with an unkillable player, prints what spawned; script errors appear in the output). On Windows the GUI exe prints nothing: add `--log-file <path>` and read the file. Open the project in the editor once after adding a `class_name`, so the global class cache knows it.
 
 The game is a rhythm/deckbuilder hybrid: the player arranges cards on a track, then a 3D arena fight runs where the cards are played automatically in a loop, on tempo, while enemies spawn.
 
