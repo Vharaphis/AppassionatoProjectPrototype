@@ -1,0 +1,54 @@
+[gd_scene format=3 uid="uid://dmj0oengu0g0a"]
+
+[ext_resource type="Script" uid="uid://x5oe1x172s5" path="res://scenes/card_management_scene.gd" id="1_j72h1"]
+[ext_resource type="Script" uid="uid://djk7fh8dnevvw" path="res://scripts/cards/hand.gd" id="6_ocpiu"]
+[ext_resource type="Script" uid="uid://wv6s42ab7fp8" path="res://scripts/cards/playing_area.gd" id="7_cxt2q"]
+
+[node name="CardManagementScene" type="Control" unique_id=477727870]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_j72h1")
+
+[node name="Hand" type="HBoxContainer" parent="." unique_id=1508068058]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 300.0
+offset_right = 40.0
+offset_bottom = 340.0
+script = ExtResource("6_ocpiu")
+
+[node name="PlayingArea" type="HBoxContainer" parent="." unique_id=1861295477]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("7_cxt2q")
+
+[node name="HUD" type="Control" parent="." unique_id=252701356]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PlayButton" type="Button" parent="HUD" unique_id=165472499]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+text = "Play"
+
+[node name="RoundLabel" type="Label" parent="HUD" unique_id=1127124097]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 120.0
+offset_right = 400.0
+offset_bottom = 26.0
+text = "Manche 1"
+
+[node name="DeckLabel" type="Label" parent="HUD" unique_id=838683009]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 120.0
+offset_top = 28.0
+offset_right = 400.0
+offset_bottom = 54.0
+text = "Pioche 0  ·  défausse 0"
