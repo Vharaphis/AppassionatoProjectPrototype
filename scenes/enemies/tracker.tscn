@@ -13,3 +13,5 @@ material_override = SubResource("StandardMaterial3D_tracker")
 
 [node name="ChaseBehavior" type="Node" parent="."]
 script = ExtResource("2_chase")
+flank_distance = 5.0
+lead_time = 0.6
