@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Godot **4.7** (Forward+, Jolt Physics, D3D12 on Windows) prototype written in GDScript. No build system, linter or test suite: the project is run from the Godot editor (F5). Main scene is `scenes/cardManagementScene.tscn`.
+Godot **4.7** (Forward+, Jolt Physics, D3D12 on Windows) prototype written in GDScript. No build system or linter: the project is run from the Godot editor (F5). Main scene is `scenes/cardManagementScene.tscn`.
+
+Tests are plain scripts in `tests/`, run headless: `godot --headless --script res://tests/test_spawn_table.gd` (asserts, prints `OK`) and `godot --headless --script res://tests/smoke_fight.gd -- <round> <game seconds>` (runs the fight at that round with an unkillable player, prints what spawned; script errors appear in the output). On Windows the GUI exe prints nothing: add `--log-file <path>` and read the file. Open the project in the editor once after adding a `class_name`, so the global class cache knows it.
 
 The game is a rhythm/deckbuilder hybrid: the player arranges cards on a track, then a 3D arena fight runs where the cards are played automatically in a loop, on tempo, while enemies spawn.
 
@@ -30,6 +32,7 @@ Nodes are decoupled via signals and `@export` references; the scene script (`sce
 
 - **`CardReader`**: pure timing logic. Advances one slot every `60/bpm * beats_per_slot` seconds using an accumulator (not a Timer), emits `slot_entered` / `card_played` / `loop_completed`. Re-reads temporality each slot so it can change mid-combat.
 - **`CombatRuntime`**: listens to `card_played`, refreshes a shared **`EffectContext`** (player, enemies, level, reader, source card, previous card, `effect_multiplier`) and calls `effect.execute(ctx)`. Effects should use `ctx.scale_amount()` for numbers.
+- **Enemies**: an enemy type = `EnemyData` (stats + scene, `.tres` in `scenes/enemies/`) + a scene whose `Enemy` root has an `EnemyBehavior` child (movement, e.g. `ChaseBehavior`). `EnemySpawner` picks from a `SpawnTable` of `SpawnEntry` weighted by round (`RunState.round_index`, or `round_override`) and injects `enemy.data` before `add_child`. Adding an enemy = new data/scene/behavior + a table entry, no spawner change.
 - **`CombatObjective`**: counts deaths of enemies spawned by `EnemySpawner`, emits `completed`.
 - **`HealthComponent`** (`scripts/components/`): shared by player and enemies (HP, armor, invulnerability). Armor deliberately does not persist between rounds.
 - **`Level`** (`@tool`): builds floor/walls from `arena_size`; `get_playable_rect()` is used for spawn clamping.

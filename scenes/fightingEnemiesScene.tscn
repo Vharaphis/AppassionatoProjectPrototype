@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://knkrnbdiw4pi" path="res://scenes/player/player.tscn" id="3_player"]
 [ext_resource type="Script" uid="uid://cy7ir6ps0oqw3" path="res://scripts/player/follow_camera.gd" id="4_camera"]
 [ext_resource type="Script" uid="uid://cq378s3l0ti2f" path="res://scripts/enemies/enemy_spawner.gd" id="5_spawner"]
-[ext_resource type="PackedScene" uid="uid://gr51l2w6pyvx" path="res://scenes/enemies/enemy.tscn" id="6_enemy"]
+[ext_resource type="Resource" uid="uid://df476nbyj7i5f" path="res://scenes/enemies/spawn_table.tres" id="6_spawn_table"]
 [ext_resource type="Script" uid="uid://cr8rn7bvc40ts" path="res://scripts/combat/card_reader.gd" id="7_reader"]
 [ext_resource type="Script" uid="uid://bqic58bf5o12t" path="res://scripts/combat/combat_runtime.gd" id="8_runtime"]
 [ext_resource type="Script" uid="uid://dhnklq0wt3bf5" path="res://scripts/combat/combat_objective.gd" id="9_objective"]
@@ -44,7 +44,7 @@ target = NodePath("../Player")
 [node name="EnemySpawner" type="Node3D" parent="." unique_id=888772384 node_paths=PackedStringArray("target", "enemies_container", "level")]
 unique_name_in_owner = true
 script = ExtResource("5_spawner")
-enemy_scene = ExtResource("6_enemy")
+spawn_table = ExtResource("6_spawn_table")
 target = NodePath("../Player")
 enemies_container = NodePath("../Enemies")
 level = NodePath("../Level")
