@@ -12,10 +12,10 @@ var reader: CardReader
 ## Card currently being played and its position on the track.
 var source: CardInstance
 var card_index: int = -1
-## Card played just before this one (for future "Combo" keywords).
-var previous_card: CardInstance
-## Multiplier applied to the numbers of the effects (for future "Ampli" cards).
+## Multiplier applied to the numbers of the effects of the card being played (Ampli).
 var effect_multiplier: float = 1.0
+## Set by Ampli, applied to (and consumed by) the next Attaque or Préparation read.
+var pending_multiplier: float = 1.0
 
 func get_enemies() -> Array[Enemy]:
 	var enemies: Array[Enemy] = []

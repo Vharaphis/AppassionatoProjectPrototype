@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="CardData" format=3 uid="uid://ck3jfsepcqhb2"]
+
+[ext_resource type="Script" uid="uid://v3hbk2005353" path="res://scripts/data/card_data.gd" id="1_card_data"]
+[ext_resource type="Script" uid="uid://drcxodvl17073" path="res://scripts/effects/card_effect.gd" id="2_card_effect"]
+[ext_resource type="Script" uid="uid://d4istn1avrwcf" path="res://scripts/effects/projectile_effect.gd" id="3_projectile"]
+[ext_resource type="Script" uid="uid://cfnlmhnlfi3r8" path="res://scripts/effects/keywords/keyword_effect.gd" id="4_keyword"]
+[ext_resource type="Script" uid="uid://dk3aumiinmly6" path="res://scripts/effects/keywords/solo_condition.gd" id="5_solo"]
+
+[sub_resource type="Resource" id="Resource_picking_solo"]
+script = ExtResource("5_solo")
+
+[sub_resource type="Resource" id="Resource_picking_bouncing"]
+script = ExtResource("3_projectile")
+count = 4
+damage = 2
+bounces = 4
+
+[sub_resource type="Resource" id="Resource_picking_shots"]
+script = ExtResource("3_projectile")
+count = 4
+damage = 2
+
+[sub_resource type="Resource" id="Resource_picking_keyword"]
+script = ExtResource("4_keyword")
+condition = SubResource("Resource_picking_solo")
+text = "les projectiles rebondissent 4 fois entre les ennemis."
+effects = Array[ExtResource("2_card_effect")]([SubResource("Resource_picking_bouncing")])
+otherwise = Array[ExtResource("2_card_effect")]([SubResource("Resource_picking_shots")])
+
+[resource]
+script = ExtResource("1_card_data")
+card_name = "Picking"
+description = "4 projectiles de 2 dégâts sur les ennemis les plus proches."
+effects = Array[ExtResource("2_card_effect")]([SubResource("Resource_picking_keyword")])

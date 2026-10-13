@@ -9,19 +9,40 @@ layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_j72h1")
 
+[node name="TrackBackground" type="Panel" parent="." unique_id=1203948571]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 60.0
+offset_right = 1144.0
+offset_bottom = 330.0
+mouse_filter = 2
+
+[node name="HandBackground" type="Panel" parent="." unique_id=1203948572]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 340.0
+offset_right = 1144.0
+offset_bottom = 610.0
+mouse_filter = 2
+
 [node name="Hand" type="HBoxContainer" parent="." unique_id=1508068058]
 unique_name_in_owner = true
 layout_mode = 0
-offset_top = 300.0
-offset_right = 40.0
-offset_bottom = 340.0
+custom_minimum_size = Vector2(1120, 258)
+offset_left = 16.0
+offset_top = 346.0
+offset_right = 1136.0
+offset_bottom = 604.0
 script = ExtResource("6_ocpiu")
 
 [node name="PlayingArea" type="HBoxContainer" parent="." unique_id=1861295477]
 unique_name_in_owner = true
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+custom_minimum_size = Vector2(1120, 258)
+offset_left = 16.0
+offset_top = 66.0
+offset_right = 1136.0
+offset_bottom = 324.0
 script = ExtResource("7_cxt2q")
 
 [node name="HUD" type="Control" parent="." unique_id=252701356]
@@ -52,3 +73,20 @@ offset_top = 28.0
 offset_right = 400.0
 offset_bottom = 54.0
 text = "Pioche 0  ·  défausse 0"
+
+[node name="ManaLabel" type="Label" parent="HUD" unique_id=1640212377]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 420.0
+offset_right = 640.0
+offset_bottom = 26.0
+text = "Mana 4 / 4"
+
+[node name="RedrawLabel" type="Label" parent="HUD" unique_id=1093844521]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 420.0
+offset_top = 28.0
+offset_right = 820.0
+offset_bottom = 54.0
+text = "Clic droit : défausser et repiocher (3)"

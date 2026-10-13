@@ -16,7 +16,7 @@ var _selected: CardData
 
 func _ready() -> void:
 	# finish_round() a déjà incrémenté la manche, la manche gagnée est la précédente.
-	title_label.text = "Manche %d réussie — choisis une carte" % (RunState.round_index - 1)
+	title_label.text = "Manche %d réussie — choisis une partition" % (RunState.round_index - 1)
 	confirm_button.disabled = true
 	confirm_button.pressed.connect(_on_confirm_pressed)
 	_build_choices()

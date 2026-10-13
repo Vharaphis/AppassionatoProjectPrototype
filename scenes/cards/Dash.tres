@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="CardData" format=3 uid="uid://clnnlc6262tjn"]
+
+[ext_resource type="Script" uid="uid://v3hbk2005353" path="res://scripts/data/card_data.gd" id="1_card_data"]
+[ext_resource type="Script" uid="uid://drcxodvl17073" path="res://scripts/effects/card_effect.gd" id="2_card_effect"]
+[ext_resource type="Script" uid="uid://kcxgswjg7rem" path="res://scripts/effects/damage_effect.gd" id="3_damage"]
+[ext_resource type="Script" uid="uid://trtob8glpfvl" path="res://scripts/effects/circle_targets.gd" id="4_circle"]
+[ext_resource type="Script" uid="uid://cfnlmhnlfi3r8" path="res://scripts/effects/keywords/keyword_effect.gd" id="5_keyword"]
+[ext_resource type="Script" uid="uid://bsnstfi6gsn5c" path="res://scripts/effects/keywords/berserk_condition.gd" id="6_berserk"]
+[ext_resource type="Script" uid="uid://1q41suku1dyr" path="res://scripts/effects/dash_effect.gd" id="7_dash"]
+
+[sub_resource type="Resource" id="Resource_dash_berserk"]
+script = ExtResource("6_berserk")
+
+[sub_resource type="Resource" id="Resource_dash_circle"]
+script = ExtResource("4_circle")
+radius = 2.0
+
+[sub_resource type="Resource" id="Resource_dash_shockwave"]
+script = ExtResource("3_damage")
+amount = 3
+targets = SubResource("Resource_dash_circle")
+
+[sub_resource type="Resource" id="Resource_dash_keyword"]
+script = ExtResource("5_keyword")
+condition = SubResource("Resource_dash_berserk")
+text = "3 dégâts autour du joueur (2 m) à la fin de la ruée."
+effects = Array[ExtResource("2_card_effect")]([SubResource("Resource_dash_shockwave")])
+
+[sub_resource type="Resource" id="Resource_dash_effect"]
+script = ExtResource("7_dash")
+on_end = Array[ExtResource("2_card_effect")]([SubResource("Resource_dash_keyword")])
+
+[resource]
+script = ExtResource("1_card_data")
+card_name = "Dash"
+type = 1
+rarity = 1
+cost = 1
+temporality = "xo"
+description = "Ruée de 4 m vers la souris, invulnérable pendant la ruée."
+effects = Array[ExtResource("2_card_effect")]([SubResource("Resource_dash_effect")])

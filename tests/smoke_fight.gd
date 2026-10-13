@@ -1,7 +1,9 @@
 extends SceneTree
 
 ## Runs the fight scene headless at a given round and reports what spawned.
-##   godot --headless --script res://tests/smoke_fight.gd -- <round> <game seconds>
+##   godot --headless --script res://tests/smoke_fight.gd -- <round> <game seconds> [Card,Card...]
+## The optional third argument sets the track from scenes/cards/<Card>.tres files,
+## otherwise 3 cards are drawn from the starting deck.
 ## Script errors show up in the output; the player is made unkillable.
 ## For behaviours with a `state` variable, also reports the states reached.
 
@@ -11,6 +13,7 @@ const MAX_REAL_MSEC := 90000
 
 var _round := 8
 var _duration := 30.0
+var _cards := PackedStringArray()
 var _elapsed := 0.0
 var _seen := {}
 var _states := {}
@@ -24,6 +27,8 @@ func _initialize() -> void:
 		_round = int(args[0])
 	if args.size() > 1:
 		_duration = float(args[1])
+	if args.size() > 2:
+		_cards = args[2].split(",")
 	Engine.time_scale = 4.0
 
 func _process(delta: float) -> bool:
@@ -35,7 +40,9 @@ func _process(delta: float) -> bool:
 		_started = true
 		var run_state := root.get_node("RunState")
 		run_state.round_index = _round
-		for i in 3:
+		for card_name in _cards:
+			run_state.card_sequence.append(load("res://scripts/data/card_instance.gd").new(load("res://scenes/cards/%s.tres" % card_name)))
+		for i in 3 if _cards.is_empty() else 0:
 			var instance = run_state.deck.draw_card()
 			if instance:
 				run_state.card_sequence.append(instance)

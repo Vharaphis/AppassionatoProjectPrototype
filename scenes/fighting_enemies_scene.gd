@@ -21,18 +21,26 @@ const REWARD_SCENE := "res://scenes/rewardScene.tscn"
 @onready var continue_button: Button = %ContinueButton
 
 var _cards: Array[Card] = []
+## Partition en cours de lecture, sous la barre de vie. Pivote à chaque changement de carte.
+var _current_card: Card
+var _current_index: int = -1
+## Barre de rechargement de la piste, sous la carte en cours.
+var _reload_bar: ProgressBar
 ## Victoire et mort peuvent tomber sur la même frame : le premier des deux gagne.
 var _combat_over: bool = false
 
 func _ready() -> void:
 	_apply_run_state()
 	_display_played_cards()
+	_create_current_card()
 	player.health.health_changed.connect(_on_player_health_changed)
 	player.health.armor_changed.connect(_on_player_armor_changed)
 	player.died.connect(_on_player_died)
 	objective.progress_changed.connect(_on_objective_progress)
 	objective.completed.connect(_on_objective_completed)
 	card_reader.slot_entered.connect(_on_slot_entered)
+	card_reader.reload_started.connect(_on_reload_started)
+	card_reader.reload_finished.connect(_reload_bar.hide)
 	back_button.pressed.connect(_on_back_pressed)
 	continue_button.pressed.connect(_on_continue_pressed)
 	game_over_panel.hide()
@@ -62,6 +70,8 @@ func _display_played_cards() -> void:
 		_cards.append(card)
 
 func _on_slot_entered(card_index: int, slot_index: int, _plays: bool) -> void:
+	_show_current_card(card_index)
+	_current_card.set_active_slot(slot_index)
 	for i in _cards.size():
 		if i == card_index:
 			_cards[i].set_active_slot(slot_index)
@@ -118,3 +128,55 @@ func _on_continue_pressed() -> void:
 func _on_back_pressed() -> void:
 	RunState.reset_run()
 	get_tree().change_scene_to_file(CARD_MANAGEMENT_SCENE)
+
+func _create_current_card() -> void:
+	_current_card = CARD_SCENE.instantiate() as Card
+	health_bar.get_parent().add_child(_current_card)
+	_current_card.position = Vector2(16.0, 52.0)
+	_current_card.pivot_offset = _current_card.custom_minimum_size / 2.0
+	_current_card.locked = true
+	_current_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_current_card.hide()
+	_reload_bar = ProgressBar.new()
+	health_bar.get_parent().add_child(_reload_bar)
+	_reload_bar.size = Vector2(_current_card.custom_minimum_size.x, 22.0)
+	_reload_bar.max_value = 1.0
+	_reload_bar.show_percentage = false
+	_reload_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var reload_label := Label.new()
+	reload_label.text = "Rechargement"
+	reload_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	reload_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_reload_bar.add_child(reload_label)
+	_reload_bar.hide()
+
+## Retourne la carte affichée (demi-tour, échange, demi-tour) quand le lecteur
+## passe à la carte suivante.
+func _show_current_card(card_index: int) -> void:
+	if card_index == _current_index or card_index >= RunState.card_sequence.size():
+		return
+	var first := _current_index == -1
+	_current_index = card_index
+	var instance := RunState.card_sequence[card_index]
+	if first:
+		_current_card.card_instance = instance
+		_current_card.show()
+		return
+	var tween := _current_card.create_tween()
+	tween.tween_property(_current_card, "scale:x", 0.0, 0.08)
+	tween.tween_callback(func() -> void: _current_card.card_instance = instance)
+	tween.tween_property(_current_card, "scale:x", 1.0, 0.08)
+
+func _process(_delta: float) -> void:
+	if _reload_bar.visible:
+		_reload_bar.value = card_reader.get_reload_progress()
+
+## Piste entièrement lue : plus rien ne joue pendant le rechargement.
+func _on_reload_started(_duration: float) -> void:
+	_current_card.clear_active_slot()
+	for card in _cards:
+		card.clear_active_slot()
+	_reload_bar.value = 0.0
+	# Sous la carte, à sa hauteur réelle (un long texte l'agrandit).
+	_reload_bar.position = _current_card.position + Vector2(0.0, _current_card.size.y + 6.0)
+	_reload_bar.show()

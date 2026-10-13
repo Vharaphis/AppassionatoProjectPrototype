@@ -13,6 +13,7 @@ func execute(ctx: EffectContext) -> void:
 	if amount <= 0:
 		push_warning("DamageEffect with an amount of 0, it will do nothing.")
 		return
+	targets.show_area(ctx)
 	var damage := ctx.scale_amount(amount)
 	for enemy in targets.select(ctx):
 		enemy.take_damage(damage, ctx.player.global_position if ctx.player else Vector3.INF)
